@@ -1,28 +1,42 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <b-navbar fixed="top" variant="primary">
+      <b-navbar-brand href="#/">Jena's Cook Book</b-navbar-brand>
+      <b-navbar-nav>
+        <b-nav-item href="#/about">Recipes</b-nav-item>
+      </b-navbar-nav>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item-dropdown right>
+          <template slot="button-content"><b-icon-gear-fill></b-icon-gear-fill> Manage</template>
+          <b-dropdown-item href="#/tags"><template><b-icon-card-list></b-icon-card-list> Recipe Tags</template></b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
+    </b-navbar>
+    <router-view id="content"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import { BIconGearFill, BIconCardList } from 'bootstrap-vue'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    BIconGearFill, BIconCardList
   }
 }
 </script>
 
-<style>
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
+#content {
+  padding-top: 55px;
+}
+
 </style>
