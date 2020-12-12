@@ -84,15 +84,13 @@ export default {
   },
   methods: {
     loadTags: function() {
-        let params = {
-          page: this.pageConfig.currentPage - 1
-        }
-        TagsService.getPage(params).then(tagsPage =>{
-          this.tags = tagsPage._embedded.tags
-          this.pageConfig.currentPage = tagsPage.page.number + 1;
-          this.pageConfig.itemsPerPage = tagsPage.page.size
-          this.pageConfig.totalItems = tagsPage.page.totalElements
-        })
+        TagsService.getPage(this.pageConfig.currentPage - 1)
+          .then(tagsPage =>{
+            this.tags = tagsPage._embedded.tags
+            this.pageConfig.currentPage = tagsPage.page.number + 1;
+            this.pageConfig.itemsPerPage = tagsPage.page.size
+            this.pageConfig.totalItems = tagsPage.page.totalElements
+          })
     },
     persistTag() {
       if(this.form._links) {

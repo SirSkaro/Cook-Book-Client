@@ -3,7 +3,11 @@ import Axios from 'axios';
 const RESOURCE = '/tags';
 
 export default {
-    getPage(queryParams) {
+    getPage(page) {
+        let queryParams = {
+            page: page,
+            sort: 'label,asc'
+          }
         return Axios.get(RESOURCE, {params: queryParams})
             .then((tags) => {
                 return tags.data
