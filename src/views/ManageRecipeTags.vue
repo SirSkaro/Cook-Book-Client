@@ -8,13 +8,24 @@
     </b-row>
 
     <b-row>
-      <b-table striped hover :items="tags" :fields="tableFields">
+      <b-table striped hover fixed :items="tags" :fields="tableFields">
         <template #cell(actions)="row">
           <b-button size="sm" variant="info" v-b-modal.tag-modal @click="setupModalEdit(row.item)"><b-icon-pencil></b-icon-pencil></b-button>
           <b-button size="sm" variant="danger" @click="deleteTag(row.item)"><b-icon-trash></b-icon-trash></b-button>
         </template>
 
       </b-table>
+    </b-row>
+
+    <b-row>
+      <b-col md="12">
+        <b-pagination align="center"
+          v-model="pageConfig.currentPage"
+          :total-rows="pageConfig.totalItems"
+          :per-page="pageConfig.itemsPerPage"
+          @input="loadTags">
+        </b-pagination>
+      </b-col>
     </b-row>
 
     <b-modal id="tag-modal" title="Add Recipe Tag" @ok="persistTag" :ok-disabled="!canSubmit">
@@ -46,6 +57,11 @@ export default {
     return {
       tags: [],
       tableFields: ['label', 'actions'],
+      pageConfig: {
+        currentPage: 1,
+        itemsPerPage: 0,
+        totalItems: 0
+      },
       form: {
         label: null
       }
@@ -68,8 +84,14 @@ export default {
   },
   methods: {
     loadTags: function() {
-        TagsService.getPage().then(tags =>{
-          this.tags = tags;
+        let params = {
+          page: this.pageConfig.currentPage - 1
+        }
+        TagsService.getPage(params).then(tagsPage =>{
+          this.tags = tagsPage._embedded.tags
+          this.pageConfig.currentPage = tagsPage.page.number + 1;
+          this.pageConfig.itemsPerPage = tagsPage.page.size
+          this.pageConfig.totalItems = tagsPage.page.totalElements
         })
     },
     persistTag() {

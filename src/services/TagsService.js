@@ -6,7 +6,7 @@ export default {
     getPage(queryParams) {
         return Axios.get(RESOURCE, {params: queryParams})
             .then((tags) => {
-                return tags.data._embedded.tags
+                return tags.data
             })
     },
     create(tag) {
