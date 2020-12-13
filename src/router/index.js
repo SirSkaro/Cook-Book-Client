@@ -14,6 +14,11 @@ const routes = [
     path: '/tags',
     name: 'Tags',
     component: () => import('../views/ManageRecipeTags.vue')
+  },
+  {
+    path: '/recipes',
+    name: 'Recipies',
+    component: () => import('../views/Recipes.vue')
   }
 ]
 
