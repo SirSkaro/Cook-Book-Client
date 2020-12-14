@@ -118,7 +118,7 @@ export default {
     },
     deleteTag() {
       this.togglePendingCall()
-      TagsService.delete(this.form)
+      return TagsService.delete(this.form)
         .catch(() => this.showErrorBanner('Unable to delete tag'))
         .then(this.loadTags)
         .finally(this.togglePendingCall)
@@ -140,7 +140,6 @@ export default {
       this.alertConfig.countdown = 5;
     },
     togglePendingCall() {
-      console.log('toggling to ', !this.hasPendingCall)
       this.hasPendingCall = !this.hasPendingCall;
     }
   }

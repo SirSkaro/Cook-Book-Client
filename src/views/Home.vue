@@ -6,7 +6,7 @@
         <b-card>
           <template #header><h4 class="mb-0">Jena's Recipies</h4></template>
           <b-card-text>View, create, and change your recipies. Search through your recipies quickly and easily by name, ingredients, and custom categories.</b-card-text>
-          <b-button href="#" variant="primary">Go to Recipies</b-button>
+          <b-button href="#/recipes" variant="primary">Go to Recipies</b-button>
         </b-card>
         <b-card>
           <template #header><h4 class="mb-0">Manage Tags</h4></template>
