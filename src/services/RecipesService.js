@@ -19,5 +19,9 @@ export default {
     },
     delete(recipe) {
         return Axios.delete(recipe._links.self.href)
+    },
+    getId(recipe) {
+        let url = recipe._links.self.href
+        return url.substring(url.lastIndexOf('/') + 1)
     }
 }

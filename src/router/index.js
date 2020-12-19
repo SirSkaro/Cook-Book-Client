@@ -21,7 +21,7 @@ const routes = [
     component: () => import('../views/CookBook.vue')
   },
   {
-    path: '/recipe/:id?',
+    path: '/recipe/:id',
     name: 'RecipeDetails',
     component: () => import('../views/RecipeDetails.vue')
   }
