@@ -21,6 +21,16 @@
           </b-card>
         </b-col>
       </b-row>
+      <b-row class="mt-3">
+        <b-col md="12">
+          <b-card bg-variant="light">
+            <IngredientList :is-edit-mode="isEditMode" 
+              :ingredients="ingredients"
+              :handle-edit="togglePendingCall"
+              :handle-delete="togglePendingCall"/>
+          </b-card>
+        </b-col>
+      </b-row>
     </LoadingScreen>
   </b-container>
 </template>
@@ -29,18 +39,21 @@
 import RecipeForm from '../components/recipe/RecipeForm'
 import LoadingScreen from '../components/common/loading-screen'
 import RecipesService from '../services/RecipesService.js'
+import IngredientList from '../components/ingredient/IngredientList'
 import { BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle } from 'bootstrap-vue'
 
 export default {
   name: 'RecipeDetails',
   components: {
     RecipeForm, LoadingScreen,
+    IngredientList,
     BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle
   },
   data() {
     return {
       hasPendingCall: false,
       recipe: {},
+      ingredients: [],
       isEditMode: false
     }
   },
@@ -59,7 +72,10 @@ export default {
     fetchRecipe() {
       let recipeId = this.$route.params.id;
       return RecipesService.getById(recipeId)
-        .then(recipe => {this.recipe = recipe})
+        .then(recipe => {
+          this.recipe = recipe
+          return RecipesService.getIngredients(this.recipe);
+        }).then(ingredients => {this.ingredients = ingredients});
     },
     cancelEdit() {
       this.togglePendingCall()
@@ -69,7 +85,7 @@ export default {
     },
     saveRecipe() {
       this.togglePendingCall()
-      return RecipesService.save(this.recipe.data)
+      return RecipesService.save(this.recipe)
         .then(recipe => this.recipe = recipe)
         .then(this.toggleEditMode)
         .finally(this.togglePendingCall)

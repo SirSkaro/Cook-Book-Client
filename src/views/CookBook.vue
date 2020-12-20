@@ -34,8 +34,8 @@
 </template>
 
 <script>
-import RecipesService from "../services/RecipesService.js"
-import RecipeCard from "../components/recipe/RecipeCard"
+import RecipesService from '../services/RecipesService.js'
+import RecipeCard from '../components/recipe/RecipeCard'
 import LoadingScreen from '../components/common/loading-screen'
 import { BIconPlusSquare } from 'bootstrap-vue'
 import NewRecipeForm from '../components/recipe/NewRecipeForm'

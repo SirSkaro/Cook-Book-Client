@@ -1,7 +1,6 @@
 <template>
   <div>
     <b-form>
-
       <b-col md="12">
         <b-form-group label="Title" label-for="title" label-align="left" label-class="font-weight-bold">
           <b-form-input id="title" 
@@ -57,7 +56,6 @@
           <b-form-invalid-feedback>Instructions must be less than 8000 characters</b-form-invalid-feedback>
         </b-form-group>
       </b-col>
-
     </b-form>
   </div>
 </template>
@@ -81,7 +79,7 @@ export default {
   },
   watch: {
     recipe: function(newValue) {
-      this.recipeForm = newValue.data
+      this.recipeForm = newValue
     }
   },
   validations: {
