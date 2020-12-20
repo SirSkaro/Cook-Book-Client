@@ -33,9 +33,9 @@
 
       <b-modal id="tag-modal" title="Edit Recipe Tag" @ok="saveTag" :ok-disabled="!canSubmit">
         <form>
-          <b-form-group label="Label" label-for="label-input">
-            <b-form-input id="label-input" v-model="$v.form.label.$model" aria-describedby="label-feedback" :state="validateState('label')"></b-form-input>
-            <b-form-invalid-feedback id="label-feedback">A label is required</b-form-invalid-feedback>
+          <b-form-group label="Label" label-for="labelInput">
+            <b-form-input id="labelInput" v-model="$v.form.label.$model" aria-describedby="labelFeedback" :state="validateState('label')"></b-form-input>
+            <b-form-invalid-feedback id="labelFeedback">A label is required</b-form-invalid-feedback>
           </b-form-group>
         </form>
       </b-modal>

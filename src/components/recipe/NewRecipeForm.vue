@@ -4,18 +4,18 @@
     @show="resetForm">
     <p>Tell me a little about your recipe. Then we'll go fill out the details. </p>
     <hr />
-    <form>
+    <b-form>
       <b-form-group label="Title" label-for="title">
         <b-form-input id="title" v-model="$v.recipeForm.label.$model" aria-describedby="titleFeedback" :state="validateState('label')"></b-form-input>
         <b-form-invalid-feedback id="titleFeedback">All recipes need a title!</b-form-invalid-feedback>
         <b-form-valid-feedback id="shortDescriptionFeedback">Sounds yummy!</b-form-valid-feedback>
       </b-form-group>
       <b-form-group label="Short Description" label-for="shortDescription">
-        <b-form-textarea id="shortDescription" rows="4" v-model="$v.recipeForm.shortDescription.$model" aria-describedby="shortDescriptionFeedback" :state="validateState('shortDescription')"></b-form-textarea>
+        <b-form-textarea no-resize id="shortDescription" rows="4" v-model="$v.recipeForm.shortDescription.$model" aria-describedby="shortDescriptionFeedback" :state="validateState('shortDescription')"></b-form-textarea>
         <b-form-invalid-feedback id="shortDescriptionFeedback">Whoa, you gotta tell me just a little about your recipe (in less than 200 characters)</b-form-invalid-feedback>
         <b-form-valid-feedback id="shortDescriptionFeedback">I like where this is going!</b-form-valid-feedback>
       </b-form-group>
-    </form>
+    </b-form>
   </b-modal> 
 </template>
 
@@ -42,7 +42,7 @@ export default {
   },
   validations: {
     recipeForm: {
-      label: { required },
+      label: { required, maxLength: maxLength(255) },
       shortDescription: { required, maxLength: maxLength(200) }
     }
   },

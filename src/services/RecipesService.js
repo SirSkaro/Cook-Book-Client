@@ -12,6 +12,9 @@ export default {
                 return tags.data
             })
     },
+    getById(recipeId) {
+        return Axios.get(RESOURCE + '/' + recipeId)
+    },
     save(recipe) {
         return recipe._links 
             ? Axios.put(recipe._links.self.href, recipe) 
@@ -23,5 +26,8 @@ export default {
     getId(recipe) {
         let url = recipe._links.self.href
         return url.substring(url.lastIndexOf('/') + 1)
+    },
+    getTags(recipe) {
+        return Axios.get(recipe._links.tags)
     }
 }

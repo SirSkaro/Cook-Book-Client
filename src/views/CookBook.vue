@@ -9,7 +9,7 @@
         </b-col>
       </b-row>
       <b-row class="mt-3">
-        <b-col style="height: 325px" class="mb-2" md="3" v-for="recipe in recipes" v-bind:key="recipe._links.self.href">
+        <b-col class="mb-2 uniform-card" md="3" v-for="recipe in recipes" v-bind:key="getRecipeId(recipe)">
           <RecipeCard class="h-100" :recipe="recipe"/>
         </b-col>
       </b-row>
@@ -87,13 +87,16 @@ export default {
       return RecipesService.save(recipe)
         .then(this.loadRecipes)
         .finally(this.togglePendingCall)
+    },
+    getRecipeId(recipe) {
+      return RecipesService.getId(recipe);
     }
   }
 }
 </script>
 
 <style scoped>
-#uniform-card {
+.uniform-card {
   height: 325px;
 }
 </style>
