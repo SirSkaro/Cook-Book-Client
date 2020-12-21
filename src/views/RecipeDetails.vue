@@ -7,7 +7,8 @@
           <b-button href="#/cookbook" size="lg" variant="outline-secondary"><b-icon-backspace/> Back to Cookbook</b-button>
         </b-col>
         <b-col md="1" offset-md="8"> 
-          <b-button v-if="!isEditMode" variant="info" @click="toggleEditMode()"><b-icon-pencil/></b-button>
+          <b-button v-if="!isEditMode" variant="info" @click="startEdit()"><b-icon-pencil /></b-button>
+          <b-button v-if="isEditMode" variant="secondary" @click="cancelEdit()"><b-icon-eye /></b-button>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -41,14 +42,14 @@ import LoadingScreen from '../components/common/loading-screen'
 import RecipesService from '../services/RecipesService.js'
 import IngredientsService from '../services/IngredientsService.js'
 import IngredientList from '../components/ingredient/IngredientList'
-import { BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle } from 'bootstrap-vue'
+import { BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle, BIconEye } from 'bootstrap-vue'
 
 export default {
   name: 'RecipeDetails',
   components: {
     RecipeForm, LoadingScreen,
     IngredientList,
-    BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle
+    BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle, BIconEye
   },
   data() {
     return {
@@ -67,7 +68,7 @@ export default {
     togglePendingCall() {
       this.hasPendingCall = !this.hasPendingCall;
     },
-    toggleEditMode() {
+    startEdit() {
       this.isEditMode = !this.isEditMode;
     },
     fetchRecipe() {
@@ -81,14 +82,14 @@ export default {
     cancelEdit() {
       this.togglePendingCall()
       this.fetchRecipe()
-        .then(this.toggleEditMode)
+        .then(this.startEdit)
         .finally(this.togglePendingCall)
     },
     saveRecipe() {
       this.togglePendingCall()
       return RecipesService.save(this.recipe)
         .then(recipe => this.recipe = recipe)
-        .then(this.toggleEditMode)
+        .then(this.startEdit)
         .finally(this.togglePendingCall)
     },
     saveIngredient(ingredient) {
