@@ -25,7 +25,7 @@
         <b-col md="12">
           <b-card bg-variant="light">
             <IngredientList :is-edit-mode="isEditMode" 
-              :ingredients="ingredients"
+              v-bind:ingredients="ingredients"
               :handle-edit="togglePendingCall"
               :handle-delete="togglePendingCall"/>
           </b-card>

@@ -4,7 +4,7 @@
     <LoadingScreen :show="hasPendingCall">
       <b-row>
         <b-col md="3" offset-md="9"> 
-          <b-button size="lg" variant="primary" @click="openNewRecipeForm()"><b-icon-plus-square></b-icon-plus-square> Add Recipe</b-button>
+          <b-button size="lg" variant="primary" @click="openNewRecipeForm()"><b-icon-plus-square/> Add Recipe</b-button>
           <NewRecipeForm :handleSubmit="createRecipe"/>
         </b-col>
       </b-row>

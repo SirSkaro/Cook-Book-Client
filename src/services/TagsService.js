@@ -9,9 +9,7 @@ export default {
             sort: 'label,asc'
           }
         return Axios.get(RESOURCE, {params: queryParams})
-            .then((tags) => {
-                return tags.data
-            })
+            .then((response) => response.data)
     },
     save(tag) {
         return tag._links 
