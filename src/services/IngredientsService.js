@@ -10,7 +10,10 @@ export default {
         return Axios.get(RESOURCE, {params: queryParams})
             .then((response) => response.data)
     },
-    save(ingredient) {
+    save(ingredient, recipe) {
+        if(recipe && !ingredient._links) {
+            ingredient.recipe = recipe._links.self.href
+        }
         return (ingredient._links ? Axios.put(ingredient._links.self.href, ingredient) : Axios.post(RESOURCE, ingredient))
             .then(response => response.data)
     },

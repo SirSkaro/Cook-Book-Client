@@ -26,8 +26,8 @@
           <b-card bg-variant="light">
             <IngredientList :is-edit-mode="isEditMode" 
               v-bind:ingredients="ingredients"
-              :handle-edit="saveIngredient"
-              :handle-delete="togglePendingCall"/>
+              :handle-save="saveIngredient"
+              :handle-delete="deleteIngredient"/>
           </b-card>
         </b-col>
       </b-row>
@@ -93,7 +93,13 @@ export default {
     },
     saveIngredient(ingredient) {
       this.togglePendingCall()
-      return IngredientsService.save(ingredient)
+      return IngredientsService.save(ingredient, this.recipe)
+        .then(this.fetchRecipe)
+        .finally(this.togglePendingCall)
+    },
+    deleteIngredient(ingredient) {
+      this.togglePendingCall()
+      return IngredientsService.delete(ingredient)
         .then(this.fetchRecipe)
         .finally(this.togglePendingCall)
     }

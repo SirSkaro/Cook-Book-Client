@@ -48,7 +48,7 @@ export default {
       label: { required, maxLength: maxLength(64) },
       quantity: { minValue: minValue(1/16) },
       units: { maxLength: maxLength(64) },
-      optional: {}
+      optional: { required }
     }
   },
   methods: {
@@ -63,7 +63,7 @@ export default {
   },
   computed: {
     canSubmit: function() {
-      return !this.$v.ingredientForm.$anyError
+      return !this.$v.ingredientForm.$invalid
     }
   }
 }

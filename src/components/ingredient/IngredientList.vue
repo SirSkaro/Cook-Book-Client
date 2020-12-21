@@ -5,7 +5,7 @@
         <h3>Ingredients</h3>
       </b-col>
       <b-col md="3" offset-md="2"> 
-        <b-button v-if="isEditMode" size="lg" variant="primary"><b-icon-plus-square/> Add Ingredient</b-button>
+        <b-button v-if="isEditMode" @click="create" size="lg" variant="primary"><b-icon-plus-square/> Add Ingredient</b-button>
       </b-col>
     </b-row>
     <b-row class="mt-3">
@@ -25,14 +25,22 @@
             <b-td :variant="getRowVariant(ingredient)">{{ingredient.units}}</b-td>
             <b-td v-if="isEditMode">
               <b-button v-if="isEditMode" variant="info" @click="edit(ingredient)"><b-icon-pencil/></b-button>
-              <b-button v-if="isEditMode" variant="danger"><b-icon-trash/></b-button>
+              <b-button v-if="isEditMode" variant="danger" @click="remove(ingredient)"><b-icon-trash/></b-button>
             </b-td>
           </b-tr>
         </b-tbody>
       </b-table-simple>
     </b-row>
 
-    <IngredientForm :ingredient="selectedIngredient" :handle-submit="handleEdit"/>
+    <IngredientForm :ingredient="selectedIngredient" :handle-submit="handleSave"/>
+    <b-modal :id="deleteModalId"
+      title="Remove ingredient"
+      ok-variant="danger"
+      ok-title="Yes, remove"
+      @ok="handleDelete(selectedIngredient)">
+      <p>You are about to remove the ingredient <b>{{selectedIngredient.label}}</b> from this recipe.</p>
+      <p>Are you sure you want to remove this ingredient?</p>
+    </b-modal>
   </div>
 </template>
 
@@ -40,18 +48,20 @@
 import IngredientsService from '../../services/IngredientsService.js'
 import { BIconPencil, BIconTrash, BIconPlusSquare } from 'bootstrap-vue'
 import IngredientForm from './IngredientForm'
+const deleteModalId = 'delete-ingredient-modal'
 
 export default {
   name: 'IngredientList',
   props: {
     isEditMode: {type: Boolean, default: false},
     ingredients: {type: Array, required: true},
-    handleEdit: {type: Function, required: true},
+    handleSave: {type: Function, required: true},
     handleDelete: {type: Function, required: true}
   },
   data() {
     return {
-      selectedIngredient: {}
+      selectedIngredient: {},
+      deleteModalId
     }
   },
   components: {
@@ -67,6 +77,19 @@ export default {
     },
     edit(ingredient) {
       this.selectedIngredient = ingredient;
+      this.$bvModal.show(IngredientForm.modalId);
+    },
+    remove(ingredient) {
+      this.selectedIngredient = ingredient;
+      this.$bvModal.show(deleteModalId);
+    },
+    create() {
+      this.selectedIngredient = {
+        label: null,
+        optional: false,
+        quantity: null,
+        units: null
+      }
       this.$bvModal.show(IngredientForm.modalId);
     }
   }
