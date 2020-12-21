@@ -26,7 +26,7 @@
           <b-card bg-variant="light">
             <IngredientList :is-edit-mode="isEditMode" 
               v-bind:ingredients="ingredients"
-              :handle-edit="togglePendingCall"
+              :handle-edit="saveIngredient"
               :handle-delete="togglePendingCall"/>
           </b-card>
         </b-col>
@@ -39,6 +39,7 @@
 import RecipeForm from '../components/recipe/RecipeForm'
 import LoadingScreen from '../components/common/loading-screen'
 import RecipesService from '../services/RecipesService.js'
+import IngredientsService from '../services/IngredientsService.js'
 import IngredientList from '../components/ingredient/IngredientList'
 import { BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle } from 'bootstrap-vue'
 
@@ -88,6 +89,12 @@ export default {
       return RecipesService.save(this.recipe)
         .then(recipe => this.recipe = recipe)
         .then(this.toggleEditMode)
+        .finally(this.togglePendingCall)
+    },
+    saveIngredient(ingredient) {
+      this.togglePendingCall()
+      return IngredientsService.save(ingredient)
+        .then(this.fetchRecipe)
         .finally(this.togglePendingCall)
     }
   }

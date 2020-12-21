@@ -24,19 +24,22 @@
             <b-td :variant="getRowVariant(ingredient)">{{ingredient.quantity}}</b-td>
             <b-td :variant="getRowVariant(ingredient)">{{ingredient.units}}</b-td>
             <b-td v-if="isEditMode">
-              <b-button v-if="isEditMode" variant="info"><b-icon-pencil/></b-button>
+              <b-button v-if="isEditMode" variant="info" @click="edit(ingredient)"><b-icon-pencil/></b-button>
               <b-button v-if="isEditMode" variant="danger"><b-icon-trash/></b-button>
             </b-td>
           </b-tr>
         </b-tbody>
       </b-table-simple>
     </b-row>
+
+    <IngredientForm :ingredient="selectedIngredient" :handle-submit="handleEdit"/>
   </div>
 </template>
 
 <script>
 import IngredientsService from '../../services/IngredientsService.js'
 import { BIconPencil, BIconTrash, BIconPlusSquare } from 'bootstrap-vue'
+import IngredientForm from './IngredientForm'
 
 export default {
   name: 'IngredientList',
@@ -46,7 +49,13 @@ export default {
     handleEdit: {type: Function, required: true},
     handleDelete: {type: Function, required: true}
   },
+  data() {
+    return {
+      selectedIngredient: {}
+    }
+  },
   components: {
+    IngredientForm, 
     BIconPencil, BIconTrash, BIconPlusSquare
   },
   methods: {
@@ -55,6 +64,10 @@ export default {
     },
     getRowVariant(ingredient) {
       return ingredient.optional ? 'warning' : 'default'
+    },
+    edit(ingredient) {
+      this.selectedIngredient = ingredient;
+      this.$bvModal.show(IngredientForm.modalId);
     }
   }
 }
