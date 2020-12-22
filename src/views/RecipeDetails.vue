@@ -32,6 +32,17 @@
           </b-card>
         </b-col>
       </b-row>
+      <b-row class="mt-3">
+        <b-col md="12">
+          <b-card bg-variant="light">
+            <TagForm :is-edit-mode="isEditMode" 
+              :selected-tags="tags"
+              :handle-select-tag="addTag"
+              :handle-remove-tag="deleteTag"/>
+          </b-card>
+        </b-col>
+      </b-row>
+      <b-row class="mt-5"/>
     </LoadingScreen>
   </b-container>
 </template>
@@ -42,12 +53,13 @@ import LoadingScreen from '../components/common/loading-screen'
 import RecipesService from '../services/RecipesService.js'
 import IngredientsService from '../services/IngredientsService.js'
 import IngredientList from '../components/ingredient/IngredientList'
+import TagForm from '../components/tag/TagForm'
 import { BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle, BIconEye } from 'bootstrap-vue'
 
 export default {
   name: 'RecipeDetails',
   components: {
-    RecipeForm, LoadingScreen,
+    RecipeForm, TagForm, LoadingScreen,
     IngredientList,
     BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle, BIconEye
   },
@@ -56,12 +68,13 @@ export default {
       hasPendingCall: false,
       recipe: {},
       ingredients: [],
+      tags: [],
       isEditMode: false
     }
   },
   created() {
     this.togglePendingCall()
-    this.fetchRecipe()
+    this.fetchData()
       .finally(this.togglePendingCall)
   },
   methods: {
@@ -71,17 +84,27 @@ export default {
     startEdit() {
       this.isEditMode = !this.isEditMode;
     },
+    fetchData() {
+      return this.fetchRecipe()
+        .then(this.fetchIngredients)
+        .then(this.fetchTags)
+    },
     fetchRecipe() {
       let recipeId = this.$route.params.id;
       return RecipesService.getById(recipeId)
-        .then(recipe => {
-          this.recipe = recipe
-          return RecipesService.getIngredients(this.recipe);
-        }).then(ingredients => {this.ingredients = ingredients});
+        .then(recipe => {this.recipe = recipe})
+    },
+    fetchIngredients() {
+      return RecipesService.getIngredients(this.recipe)
+        .then(ingredients => {this.ingredients = ingredients})
+    },
+    fetchTags() {
+      return RecipesService.getTags(this.recipe)
+        .then(tags => {this.tags = tags})
     },
     cancelEdit() {
       this.togglePendingCall()
-      this.fetchRecipe()
+      this.fetchData()
         .then(this.startEdit)
         .finally(this.togglePendingCall)
     },
@@ -95,13 +118,25 @@ export default {
     saveIngredient(ingredient) {
       this.togglePendingCall()
       return IngredientsService.save(ingredient, this.recipe)
-        .then(this.fetchRecipe)
+        .then(this.fetchData)
         .finally(this.togglePendingCall)
     },
     deleteIngredient(ingredient) {
       this.togglePendingCall()
       return IngredientsService.delete(ingredient)
-        .then(this.fetchRecipe)
+        .then(this.fetchData)
+        .finally(this.togglePendingCall)
+    },
+    addTag(tag) {
+      this.togglePendingCall()
+      return RecipesService.addTag(this.recipe, tag)
+        .then(this.fetchData)
+        .finally(this.togglePendingCall)
+    },
+    deleteTag(tag) {
+      this.togglePendingCall()
+      return RecipesService.deleteTag(this.recipe, tag)
+        .then(this.fetchData)
         .finally(this.togglePendingCall)
     }
   }

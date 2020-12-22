@@ -34,5 +34,20 @@ export default {
     getIngredients(recipe) {
         return Axios.get(recipe._links.ingredients.href)
             .then(response => response.data._embedded.ingredients)
+    },
+    addTag(recipe, tag) {
+        let recipeTagsUrl = recipe._links.tags.href
+        let tagSelfRef = tag._links.self.href
+        let requestConfig = {
+            headers: {'Content-Type' : 'text/uri-list'}
+        }
+        return Axios.post(recipeTagsUrl, tagSelfRef, requestConfig)
+            .then(response => response.data)
+    },
+    deleteTag(recipe, tag) {
+        let recipeTagsUrl = recipe._links.tags.href
+        let tagId = this.getId(tag)
+        let resourceToDelete = recipeTagsUrl + '/' + tagId
+        return Axios.delete(resourceToDelete)
     }
 }
