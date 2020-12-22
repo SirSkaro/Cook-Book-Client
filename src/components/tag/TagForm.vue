@@ -22,13 +22,24 @@
             <template #button-content><b-icon-tag-fill /> Choose tags</template>
             <b-dropdown-form>
               <b-form-group label="Search recipe tags">
-                <b-form-input v-model="search" type="search" v-debounce:500="searchTags"/>
+                <b-form-input type="search" 
+                  v-model="search" 
+                  v-debounce:500="searchTags"
+                  :readonly="searchPending"/>
               </b-form-group>
             </b-dropdown-form>
             <b-dropdown-divider/>
-            <b-dropdown-item-button v-for="option in availableTags" :key="option.label" @click="onTagSelect(option)">
-              {{ option.label }}
-            </b-dropdown-item-button>
+            <div v-if="!searchPending">
+              <b-dropdown-item-button 
+                v-for="tag in availableTags" 
+                :key="getTagId(tag)" 
+                @click="onTagSelect(tag)">
+                {{ tag.label }}
+              </b-dropdown-item-button>
+            </div>
+            <div v-if="searchPending">
+              <b-dropdown-item v-for="tag in availableTags" :key="getTagId(tag)"><b-skeleton/></b-dropdown-item>
+            </div>
             <b-dropdown-text v-if="!availableTags.length">There are no tags available to select</b-dropdown-text>
           </b-dropdown>
 
@@ -56,7 +67,8 @@ export default {
   data() {
     return {
       allPossibleOptions: [],
-      search: ""
+      search: "",
+      searchPending: false
     };
   },
   created() {
@@ -80,21 +92,26 @@ export default {
       this.handleRemoveTag(tag)
     },
     tagAlreadySelected(tag) {
-      let tagId = TagsService.getId(tag)
-      return this.selectedTags.some(selectedTag => TagsService.getId(selectedTag) === tagId)
+      let tagId = this.getTagId(tag)
+      return this.selectedTags.some(selectedTag => this.getTagId(selectedTag) === tagId)
     },
     searchTags() {
       let trimmedSearch = this.search.trim().toLowerCase()
-      if(!trimmedSearch) {
-        this.getInitalSetOfTags()
-      } else {
-        TagsService.searchByPartialLabel(trimmedSearch)
+
+      this.searchPending = true
+      let searchPromise = trimmedSearch ? this.searchByPartialLabel(trimmedSearch) : this.getInitalSetOfTags();
+      searchPromise.finally(() => this.searchPending = false)
+    },
+    searchByPartialLabel(partialLabel) {
+      return TagsService.searchByPartialLabel(partialLabel)
           .then(tags => {this.allPossibleOptions = tags})
-      }
     },
     getInitalSetOfTags() {
-      TagsService.getPage(0)
+      return TagsService.getPage(0)
         .then(tags => {this.allPossibleOptions = tags._embedded.tags})
+    },
+    getTagId(tag) {
+      return TagsService.getId(tag)
     }
   }
 };
