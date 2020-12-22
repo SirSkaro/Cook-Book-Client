@@ -2,21 +2,27 @@
   <div>
     <h3>Tags</h3>
     <b-form-group>
-      <b-form-tags no-outer-focus class="mb-2">
+      <b-form-tags no-outer-focus size="lg" class="mb-2">
         <template>
 
           <ul v-if="selectedTags.length > 0" class="list-inline d-inline-block mb-2">
             <li v-for="tag in selectedTags" :key="tag.label" class="list-inline-item">
-              <b-form-tag @remove="onTagRemove(tag)" :title="tag.label" variant="info">{{ tag.label }}</b-form-tag>
+              <b-form-tag
+                :disabled="!isEditMode"
+                @remove="onTagRemove(tag)" 
+                :title="tag.label" 
+                variant="dark">
+                {{ tag.label }}
+              </b-form-tag>
             </li>
           </ul>
           <h5 v-else>There are no tags associated with this recipe</h5>
 
-          <b-dropdown v-if="isEditMode" size="sm" block menu-class="w-100">
+          <b-dropdown v-if="isEditMode" size="lg" block menu-class="w-100">
             <template #button-content><b-icon-tag-fill /> Choose tags</template>
             <b-dropdown-form>
               <b-form-group label="Search recipe tags">
-                <b-form-input v-model="search" type="search"/>
+                <b-form-input v-model="search" type="search" v-debounce:500="searchTags"/>
               </b-form-group>
             </b-dropdown-form>
             <b-dropdown-divider/>
@@ -54,8 +60,7 @@ export default {
     };
   },
   created() {
-    TagsService.getAll()
-      .then(tags => {this.allPossibleOptions = tags})
+    this.getInitalSetOfTags()
   },
   computed: {
     criteria() {
@@ -64,7 +69,6 @@ export default {
     availableTags() {
       return this.allPossibleOptions
         .filter(tag => !this.tagAlreadySelected(tag))
-        .filter(this.tagMatchesSearchCriteria)
     }
   },
   methods: {
@@ -79,11 +83,18 @@ export default {
       let tagId = TagsService.getId(tag)
       return this.selectedTags.some(selectedTag => TagsService.getId(selectedTag) === tagId)
     },
-    tagMatchesSearchCriteria(tag) {
-      if(!this.criteria) {
-        return true
-      } 
-      return tag.label.toLowerCase().indexOf(this.criteria) > -1
+    searchTags() {
+      let trimmedSearch = this.search.trim().toLowerCase()
+      if(!trimmedSearch) {
+        this.getInitalSetOfTags()
+      } else {
+        TagsService.searchByPartialLabel(trimmedSearch)
+          .then(tags => {this.allPossibleOptions = tags})
+      }
+    },
+    getInitalSetOfTags() {
+      TagsService.getPage(0)
+        .then(tags => {this.allPossibleOptions = tags._embedded.tags})
     }
   }
 };

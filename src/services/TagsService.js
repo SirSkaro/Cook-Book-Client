@@ -11,9 +11,12 @@ export default {
         return Axios.get(RESOURCE, {params: queryParams})
             .then((response) => response.data)
     },
-    getAll() {
-        let url = RESOURCE + '/search/all'
-        return Axios.get(url)
+    searchByPartialLabel(partialLabel) {
+        let queryParams = {
+            partialLabel: partialLabel
+        }
+        let url = RESOURCE + '/search/searchByPartialLabel'
+        return Axios.get(url, {params: queryParams})
             .then(response => response.data._embedded.tags)
     },
     save(tag) {
