@@ -12,17 +12,17 @@
       <b-table-simple fixed>
         <b-thead>
           <b-tr>
-            <b-th>Ingredient</b-th>
             <b-th>Quantity</b-th>
             <b-th>Units</b-th>
+            <b-th>Ingredient</b-th>
             <b-th v-if="isEditMode"></b-th>
           </b-tr>
         </b-thead>
         <b-tbody>
           <b-tr v-for="ingredient in ingredients" v-bind:key="getIngredientId(ingredient)">
-            <b-td :variant="getRowVariant(ingredient)">{{ingredient.optional ? ' (optional)' : ''}} {{ingredient.label}}</b-td>
             <b-td :variant="getRowVariant(ingredient)">{{ingredient.quantity}}</b-td>
             <b-td :variant="getRowVariant(ingredient)">{{ingredient.units}}</b-td>
+            <b-td :variant="getRowVariant(ingredient)">{{ingredient.optional ? ' (optional)' : ''}} {{ingredient.label}}</b-td>
             <b-td v-if="isEditMode">
               <b-button v-if="isEditMode" variant="info" @click="edit(ingredient)"><b-icon-pencil/></b-button>
               <b-button v-if="isEditMode" variant="danger" @click="remove(ingredient)"><b-icon-trash/></b-button>

@@ -63,6 +63,15 @@ export default {
     IngredientList,
     BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle, BIconEye
   },
+  props: {
+    editMode: { type: Boolean, default: false}
+  },
+  created() {
+    this.isEditMode = this.editMode
+    this.togglePendingCall()
+    this.fetchData()
+      .finally(this.togglePendingCall)
+  },
   data() {
     return {
       hasPendingCall: false,
@@ -72,17 +81,18 @@ export default {
       isEditMode: false
     }
   },
-  created() {
-    this.togglePendingCall()
-    this.fetchData()
-      .finally(this.togglePendingCall)
-  },
   methods: {
     togglePendingCall() {
       this.hasPendingCall = !this.hasPendingCall;
     },
     startEdit() {
-      this.isEditMode = !this.isEditMode;
+      this.isEditMode = true;
+    },
+    cancelEdit() {
+      this.togglePendingCall()
+      this.fetchData()
+        .then(() => {this.isEditMode = false})
+        .finally(this.togglePendingCall)
     },
     fetchData() {
       return this.fetchRecipe()
@@ -102,17 +112,10 @@ export default {
       return RecipesService.getTags(this.recipe)
         .then(tags => {this.tags = tags})
     },
-    cancelEdit() {
-      this.togglePendingCall()
-      this.fetchData()
-        .then(this.startEdit)
-        .finally(this.togglePendingCall)
-    },
     saveRecipe() {
       this.togglePendingCall()
       return RecipesService.save(this.recipe)
         .then(recipe => this.recipe = recipe)
-        .then(this.startEdit)
         .finally(this.togglePendingCall)
     },
     saveIngredient(ingredient) {

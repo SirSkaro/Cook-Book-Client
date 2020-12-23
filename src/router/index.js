@@ -23,7 +23,8 @@ const routes = [
   {
     path: '/recipe/:id',
     name: 'RecipeDetails',
-    component: () => import('../views/RecipeDetails.vue')
+    component: () => import('../views/RecipeDetails.vue'),
+    props: true
   }
 ]
 

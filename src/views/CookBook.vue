@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <h1>My Cookbook</h1>
+    <h1>Recipes</h1>
     <LoadingScreen :show="hasPendingCall">
       <b-row>
         <b-col md="3" offset-md="9"> 
@@ -85,11 +85,18 @@ export default {
     createRecipe(recipe) {
       this.togglePendingCall()
       return RecipesService.save(recipe)
-        .then(this.loadRecipes)
-        .finally(this.togglePendingCall)
+        .then(this.goToNewRecipe)
+        .catch(this.togglePendingCall)
     },
     getRecipeId(recipe) {
       return RecipesService.getId(recipe);
+    },
+    goToNewRecipe(recipe) {
+      let routeConfig = { 
+        name: 'RecipeDetails', 
+        params: {id: RecipesService.getId(recipe), editMode: true}
+      }
+      this.$router.push(routeConfig)
     }
   }
 }
