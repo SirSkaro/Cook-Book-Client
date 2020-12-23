@@ -4,11 +4,20 @@
       <h1>Recipe Details</h1>
       <b-row>
         <b-col md="3">
-          <b-button href="#/cookbook" size="lg" variant="outline-secondary"><b-icon-backspace/> Back to Cookbook</b-button>
+          <b-button @click="goToCookbook()" size="lg" variant="outline-secondary"><b-icon-backspace/> Back to Recipes</b-button>
         </b-col>
-        <b-col md="1" offset-md="8"> 
+        <b-col md="2" offset-md="7"> 
           <b-button v-if="!isEditMode" variant="info" @click="startEdit()"><b-icon-pencil /></b-button>
           <b-button v-if="isEditMode" variant="secondary" @click="cancelEdit()"><b-icon-eye /></b-button>
+          <b-button variant="danger" @click="showDeleteModal()">
+            <b-icon-trash />
+            <b-modal :id="deleteModalId"
+              title="Delete Recipe" ok-variant="danger" ok-title="Yes, delete"
+              @ok="deleteRecipe">
+              <p>You are about to delete the recipe <b>{{recipe.label}}</b>.</p>
+              <p>Are you sure you want to remove this recipe?</p>
+            </b-modal>
+          </b-button>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -54,14 +63,16 @@ import RecipesService from '../services/RecipesService.js'
 import IngredientsService from '../services/IngredientsService.js'
 import IngredientList from '../components/ingredient/IngredientList'
 import TagForm from '../components/tag/TagForm'
-import { BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle, BIconEye } from 'bootstrap-vue'
+import { BIconCloudUpload, BIconBackspace, BIconPencil,
+  BIconSlashCircle, BIconEye, BIconTrash } from 'bootstrap-vue'
+const deleteModalId = 'delete-recipe-modal'
 
 export default {
   name: 'RecipeDetails',
   components: {
     RecipeForm, TagForm, LoadingScreen,
     IngredientList,
-    BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle, BIconEye
+    BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle, BIconEye, BIconTrash
   },
   props: {
     editMode: { type: Boolean, default: false}
@@ -78,7 +89,8 @@ export default {
       recipe: {},
       ingredients: [],
       tags: [],
-      isEditMode: false
+      isEditMode: false,
+      deleteModalId
     }
   },
   methods: {
@@ -141,6 +153,18 @@ export default {
       return RecipesService.deleteTag(this.recipe, tag)
         .then(this.fetchData)
         .finally(this.togglePendingCall)
+    },
+    showDeleteModal() {
+      this.$bvModal.show(deleteModalId);
+    },
+    deleteRecipe() {
+      this.togglePendingCall()
+      return RecipesService.delete(this.recipe)
+        .then(this.goToCookbook)
+        .catch(this.togglePendingCall)
+    },
+    goToCookbook() {
+      this.$router.push({name: 'CookBook'})
     }
   }
 
