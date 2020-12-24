@@ -13,7 +13,20 @@ export default {
     searchPage(page, searchParams) {
         let query = [];
         query.push('page='+page)
-        if(searchParams.title) {query.push('title='+searchParams.title)}
+        if(searchParams.title) {
+            query.push('label='+searchParams.title)
+        }
+        if(searchParams.tags.length) {
+            let tagList = searchParams.tags.map(tag => tag.label).join(',')
+            query.push('tags.label=' + tagList)
+        }
+        if(searchParams.ingredients.length) {
+            let ingredientList = searchParams.ingredients.join(',')
+            query.push('ingredients.label=' + ingredientList)
+        }
+        if(searchParams.serveCount) {
+            query.push('serveCount=' + searchParams.serveCount)
+        }
 
         return Axios.get(RESOURCE + '?' + query.join('&'))
             .then((response) => response.data)

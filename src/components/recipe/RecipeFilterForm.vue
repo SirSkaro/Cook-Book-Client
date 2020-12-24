@@ -6,7 +6,7 @@
         <hr />
         <b-form-group>
           <b-form-input 
-            v-model="selectedTitle" 
+            v-model="searchCriteria.title" 
             placeholder="Enter title. E.g. 'Hunter's Chili'"/>
         </b-form-group>
       </b-col>
@@ -15,7 +15,7 @@
         <hr />
         <b-form-group>
           <b-form-input type="number"
-            v-model="serveCount" 
+            v-model="searchCriteria.serveCount" 
             placeholder="(Leave blank for any serving yield)"/>
         </b-form-group>
       </b-col>
@@ -24,9 +24,9 @@
       <b-col md="6">
         <h4>Search by ingredients</h4>
         <hr />
-          <b-form-group v-for="(ingredient, index) in selectedIngredients" v-bind:key="index">
+          <b-form-group v-for="(ingredient, index) in searchCriteria.ingredients" v-bind:key="index">
             <b-form-input 
-              v-model="selectedIngredients[index]" 
+              v-model="searchCriteria.ingredients[index]" 
               v-on:blur="handleIngredientBlur(index)"
               placeholder="Enter ingredient. E.g. 'garlic'"/>
           </b-form-group>
@@ -38,7 +38,7 @@
         <h4>Search by tags</h4>
         <hr />
         <TagForm :is-edit-mode="true"
-          :selected-tags="selectedTags"
+          :selected-tags="searchCriteria.tags"
           :handle-select-tag="selectTag"
           :handle-remove-tag="removeTag"/>
       </b-col>
@@ -57,42 +57,34 @@ export default {
     TagForm,
     BIconPlusSquare
   },
-  data() {
-    return {
-      selectedTags: [],
-      selectedIngredients: [null],
-      selectedTitle: null,
-      serveCount: null
-    }
-  },
   props: {
-    filterCriteria: { type: Object, required: true}
+    searchCriteria: { type: Object, required: true}
   },
   methods: {
     selectTag(tag) {
-      this.selectedTags.push(tag)
+      this.searchCriteria.tags.push(tag)
     },
     removeTag(tag) {
       let tagId = TagsService.getId(tag)
-      this.selectedTags = this.selectedTags.filter(selectedTag => {
+      this.searchCriteria.tags = this.searchCriteria.tags.filter(selectedTag => {
         return TagsService.getId(selectedTag) !== tagId
       })
     },
     addSearchIngredient() {
-      this.selectedIngredients.push(null)
+      this.searchCriteria.ingredients.push(null)
     },
     handleIngredientBlur(index) {
-      let isLastIngredient = index == this.selectedIngredients.length -1;
-      let isStringEmpty = !this.selectedIngredients[index]
+      let isLastIngredient = index == this.searchCriteria.ingredients.length -1;
+      let isStringEmpty = !this.searchCriteria.ingredients[index]
       if(!isLastIngredient && isStringEmpty) {
-        this.selectedIngredients.splice(index, 1)
+        this.searchCriteria.ingredients.splice(index, 1)
       }
     }
   },
   computed: {
     showAddIngredient() {
-      let ingredientSearchSize = this.selectedIngredients.length;
-      return !!this.selectedIngredients[ingredientSearchSize - 1]
+      let ingredientSearchSize = this.searchCriteria.ingredients.length;
+      return !!this.searchCriteria.ingredients[ingredientSearchSize - 1]
     }
   }
 }

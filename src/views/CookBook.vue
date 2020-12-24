@@ -5,10 +5,10 @@
       <b-row class="mt-3">
         <b-col md="12">
           <b-card bg-variant="light"> 
-            <RecipeFilterForm v-bind:filter-criteria.sync="searchCriteria"/>
+            <RecipeFilterForm v-bind:search-criteria.sync="searchCriteria"/>
             <hr />
             <b-col align-self="center">
-              <b-button size="lg"><b-icon-search/> Search for recipes</b-button>
+              <b-button size="lg" @click="loadRecipes()"><b-icon-search/> Search for recipes</b-button>
             </b-col>
           </b-card>
         </b-col>
@@ -67,7 +67,12 @@ export default {
         label: null,
         shortDescritpion: null
       },
-      searchCriteria: {}
+      searchCriteria: {
+        tags: [],
+        ingredients: [null],
+        title: null,
+        serveCount: null
+      }
     };
   },
   components: {
