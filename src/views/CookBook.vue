@@ -2,7 +2,18 @@
   <b-container>
     <h1>Recipes</h1>
     <LoadingScreen :show="hasPendingCall">
-      <b-row>
+      <b-row class="mt-3">
+        <b-col md="12">
+          <b-card bg-variant="light"> 
+            <RecipeFilterForm v-bind:filter-criteria.sync="searchCriteria"/>
+            <hr />
+            <b-col align-self="center">
+              <b-button size="lg"><b-icon-search/> Search for recipes</b-button>
+            </b-col>
+          </b-card>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
         <b-col md="3" offset-md="9"> 
           <b-button size="lg" variant="primary" @click="openNewRecipeForm()"><b-icon-plus-square/> Add Recipe</b-button>
           <NewRecipeForm :handleSubmit="createRecipe"/>
@@ -19,8 +30,8 @@
             v-model="pageConfig.currentPage"
             :total-rows="pageConfig.totalItems"
             :per-page="pageConfig.itemsPerPage"
-            @input="loadRecipes"
-          ></b-pagination>
+            @input="loadRecipes">
+          </b-pagination>
         </b-col>
         <b-col md="12" v-else>
           <h3>
@@ -37,8 +48,9 @@
 import RecipesService from '../services/RecipesService.js'
 import RecipeCard from '../components/recipe/RecipeCard'
 import LoadingScreen from '../components/common/loading-screen'
-import { BIconPlusSquare } from 'bootstrap-vue'
+import { BIconPlusSquare, BIconSearch } from 'bootstrap-vue'
 import NewRecipeForm from '../components/recipe/NewRecipeForm'
+import RecipeFilterForm from '../components/recipe/RecipeFilterForm'
 
 export default {
   name: "CookBook",
@@ -54,12 +66,14 @@ export default {
       newRecipeForm: {
         label: null,
         shortDescritpion: null
-      }
+      },
+      searchCriteria: {}
     };
   },
   components: {
-    LoadingScreen, BIconPlusSquare, 
-    RecipeCard, NewRecipeForm
+    LoadingScreen, 
+    BIconPlusSquare, BIconSearch,
+    RecipeCard, NewRecipeForm, RecipeFilterForm
   },
   created() {
     this.togglePendingCall()
@@ -67,13 +81,14 @@ export default {
       .finally(this.togglePendingCall)
   },
   methods: {
-    loadRecipes: function() {
-      return RecipesService.getPage(0)
+    loadRecipes() {
+      let page = this.pageConfig.currentPage - 1
+      return RecipesService.searchPage(page, this.searchCriteria)
         .then(recipePage => {
             this.recipes = recipePage._embedded.recipes;
-            this.pageConfig.currentPage = recipePage.page.number + 1;
-            this.pageConfig.itemsPerPage = recipePage.page.size;
-            this.pageConfig.totalItems = recipePage.page.totalElements;
+            this.pageConfig.currentPage = recipePage.page.number + 1
+            this.pageConfig.itemsPerPage = recipePage.page.size
+            this.pageConfig.totalItems = recipePage.page.totalElements
         })
     },
     togglePendingCall() {

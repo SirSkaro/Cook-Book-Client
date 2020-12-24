@@ -8,9 +8,15 @@ export default {
             page: page
           }
         return Axios.get(RESOURCE, {params: queryParams})
-            .then((response) => {
-                return response.data
-            })
+            .then((response) => response.data)
+    },
+    searchPage(page, searchParams) {
+        let query = [];
+        query.push('page='+page)
+        if(searchParams.title) {query.push('title='+searchParams.title)}
+
+        return Axios.get(RESOURCE + '?' + query.join('&'))
+            .then((response) => response.data)
     },
     getById(recipeId) {
         return Axios.get(RESOURCE + '/' + recipeId)

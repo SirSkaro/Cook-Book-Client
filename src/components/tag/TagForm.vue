@@ -1,8 +1,7 @@
 <template>
   <div>
-    <h3>Tags</h3>
     <b-form-group>
-      <b-form-tags no-outer-focus size="lg" class="mb-2">
+      <b-form-tags no-outer-focus size="lg">
         <template>
 
           <ul v-if="selectedTags.length > 0" class="list-inline d-inline-block mb-2">
@@ -16,13 +15,13 @@
               </b-form-tag>
             </li>
           </ul>
-          <h5 v-else>There are no tags associated with this recipe</h5>
+          <h5 v-else>No tags selected</h5>
 
           <b-dropdown v-if="isEditMode" size="lg" block menu-class="w-100">
             <template #button-content><b-icon-tag-fill /> Choose tags</template>
             <b-dropdown-form>
               <b-form-group label="Search recipe tags">
-                <b-form-input type="search" 
+                <b-form-input
                   v-model="search" 
                   v-debounce:500="searchTags"
                   :readonly="searchPending"/>
@@ -40,7 +39,10 @@
             <div v-if="searchPending">
               <b-dropdown-item v-for="tag in availableTags" :key="getTagId(tag)"><b-skeleton/></b-dropdown-item>
             </div>
-            <b-dropdown-text v-if="!availableTags.length">There are no tags available to select</b-dropdown-text>
+            <b-dropdown-text v-if="!availableTags.length">
+              There are no tags that match your search.
+              Perhaps you'd like to <a href="/#/tags">create a new tag</a>?
+            </b-dropdown-text>
           </b-dropdown>
 
         </template>

@@ -44,6 +44,7 @@
       <b-row class="mt-3">
         <b-col md="12">
           <b-card bg-variant="light">
+            <h3>Tags</h3>
             <TagForm :is-edit-mode="isEditMode" 
               :selected-tags="tags"
               :handle-select-tag="addTag"
