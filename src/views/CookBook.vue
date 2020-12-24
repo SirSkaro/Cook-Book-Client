@@ -3,20 +3,23 @@
     <h1>Recipes</h1>
     <LoadingScreen :show="hasPendingCall">
       <b-row class="mt-3">
+        <b-col md="3" offset-md="9"> 
+          <b-button size="lg" variant="primary" @click="openNewRecipeForm()"><b-icon-plus-square/> Add Recipe</b-button>
+          <NewRecipeForm :handleSubmit="createRecipe"/>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
         <b-col md="12">
           <b-card bg-variant="light"> 
             <RecipeFilterForm v-bind:search-criteria.sync="searchCriteria"/>
             <hr />
             <b-col align-self="center">
-              <b-button size="lg" @click="loadRecipes()"><b-icon-search/> Search for recipes</b-button>
+              <b-button-group>
+                <b-button size="lg" variant="outline-primary" @click="loadRecipes()"><b-icon-search/> Search for recipes</b-button>
+                <b-button size="lg" variant="outline-danger" @click="clearSearch()"><b-icon-x-circle/> Clear search</b-button>
+              </b-button-group>
             </b-col>
           </b-card>
-        </b-col>
-      </b-row>
-      <b-row class="mt-3">
-        <b-col md="3" offset-md="9"> 
-          <b-button size="lg" variant="primary" @click="openNewRecipeForm()"><b-icon-plus-square/> Add Recipe</b-button>
-          <NewRecipeForm :handleSubmit="createRecipe"/>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -35,8 +38,8 @@
         </b-col>
         <b-col md="12" v-else>
           <h3>
-            You don't have any recipes yet! <br /> 
-            Click the Add Recipe button in the corner and let's get cooking.
+            You don't have any recipes that match your search! <br /> 
+            Click the Add Recipe button in the corner to create one.
           </h3>
         </b-col>
       </b-row>
@@ -48,7 +51,7 @@
 import RecipesService from '../services/RecipesService.js'
 import RecipeCard from '../components/recipe/RecipeCard'
 import LoadingScreen from '../components/common/loading-screen'
-import { BIconPlusSquare, BIconSearch } from 'bootstrap-vue'
+import { BIconPlusSquare, BIconSearch, BIconXCircle } from 'bootstrap-vue'
 import NewRecipeForm from '../components/recipe/NewRecipeForm'
 import RecipeFilterForm from '../components/recipe/RecipeFilterForm'
 
@@ -69,7 +72,7 @@ export default {
       },
       searchCriteria: {
         tags: [],
-        ingredients: [null],
+        ingredients: [],
         title: null,
         serveCount: null
       }
@@ -77,7 +80,7 @@ export default {
   },
   components: {
     LoadingScreen, 
-    BIconPlusSquare, BIconSearch,
+    BIconPlusSquare, BIconSearch, BIconXCircle,
     RecipeCard, NewRecipeForm, RecipeFilterForm
   },
   created() {
@@ -95,6 +98,13 @@ export default {
             this.pageConfig.itemsPerPage = recipePage.page.size
             this.pageConfig.totalItems = recipePage.page.totalElements
         })
+    },
+    clearSearch() {
+      this.searchCriteria.tags = []
+      this.searchCriteria.ingredients = []
+      this.searchCriteria.title = null
+      this.searchCriteria.serveCount = null
+      return this.loadRecipes()
     },
     togglePendingCall() {
       this.hasPendingCall = !this.hasPendingCall;

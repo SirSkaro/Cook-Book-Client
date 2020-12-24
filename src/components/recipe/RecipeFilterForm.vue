@@ -30,7 +30,7 @@
               v-on:blur="handleIngredientBlur(index)"
               placeholder="Enter ingredient. E.g. 'garlic'"/>
           </b-form-group>
-        <b-col v-if="showAddIngredient" md="6" offset-md="6">
+        <b-col v-if="showAddIngredient" align-self="center">
           <b-button @click="addSearchIngredient()"><b-icon-plus-square/> Add ingredient to search</b-button>
         </b-col>
       </b-col>
@@ -74,9 +74,8 @@ export default {
       this.searchCriteria.ingredients.push(null)
     },
     handleIngredientBlur(index) {
-      let isLastIngredient = index == this.searchCriteria.ingredients.length -1;
       let isStringEmpty = !this.searchCriteria.ingredients[index]
-      if(!isLastIngredient && isStringEmpty) {
+      if(isStringEmpty) {
         this.searchCriteria.ingredients.splice(index, 1)
       }
     }
@@ -84,6 +83,9 @@ export default {
   computed: {
     showAddIngredient() {
       let ingredientSearchSize = this.searchCriteria.ingredients.length;
+      if(!ingredientSearchSize) {
+        return true;
+      }
       return !!this.searchCriteria.ingredients[ingredientSearchSize - 1]
     }
   }
