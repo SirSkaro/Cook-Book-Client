@@ -10,8 +10,8 @@
       </b-form-group>
       <b-form-group label="Quantity" label-for="quantityMin">
         <b-input-group>
-          <b-form-input id="quantityMin" type="number" v-model="$v.ingredientForm.quantityMin.$model" :state="validateState('quantityMin')" />
-          <b-form-input id="quantityMin" type="number" v-model="$v.ingredientForm.quantityMax.$model" :state="validateState('quantityMax')" />
+          <b-form-input id="quantityMin" v-model="$v.ingredientForm.quantityMin.$model" :state="validateState('quantityMin')" />
+          <b-form-input id="quantityMin" v-model="$v.ingredientForm.quantityMax.$model" :state="validateState('quantityMax')" />
         </b-input-group>
       </b-form-group>
       <b-form-group label="Units" label-for="units">
@@ -29,8 +29,15 @@
 
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, maxLength, minValue } from 'vuelidate/lib/validators'
+import { required, maxLength } from 'vuelidate/lib/validators'
 const modalId = 'ingredient-form-modal'
+const numericRegex = RegExp('^[0-9]+[.]?[0-9]*([/][0-9]+[.]?[0-9]*)*$')
+const evaluatesToNumber = (value) => {
+  if(!value) {
+    return true
+  } 
+  return numericRegex.test(value.toString())
+}
 
 export default {
   name: 'IngredientForm',
@@ -49,8 +56,8 @@ export default {
   validations: {
     ingredientForm: {
       label: { required, maxLength: maxLength(64) },
-      quantityMin: { minValue: minValue(1/16) },
-      quantityMax: { minValue: minValue(1/16) },
+      quantityMin: { evaluatesToNumber },
+      quantityMax: { evaluatesToNumber },
       units: { maxLength: maxLength(64) },
       optional: { required }
     }
