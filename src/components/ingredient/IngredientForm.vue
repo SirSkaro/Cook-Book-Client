@@ -8,11 +8,19 @@
       <b-form-group label="Ingredient" label-for="ingredient">
         <b-form-input id="ingredient" v-model="$v.ingredientForm.label.$model" :state="validateState('label')"/>
       </b-form-group>
-      <b-form-group label="Quantity" label-for="quantityMin">
+      <b-form-group label="Quantity" label-for="quantity">
         <b-input-group>
-          <b-form-input id="quantityMin" v-model="$v.ingredientForm.quantityMin.$model" :state="validateState('quantityMin')" />
-          <b-form-input id="quantityMin" v-model="$v.ingredientForm.quantityMax.$model" :state="validateState('quantityMax')" />
+          <b-form-input placeholder="minimum quantity"
+            v-on:blur="handleMinQuantityBlur()"
+            v-model="$v.ingredientForm.quantityMin.$model" 
+            :state="validateState('quantityMin')"/>
+          <b-form-input placeholder="maximum quantity"
+            :disabled="minQuantityEmpty" 
+            v-model="$v.ingredientForm.quantityMax.$model" 
+            :state="validateState('quantityMax')"/>
+          <b-form-invalid-feedback id="quantityFeedback">{{quantityInvalidMessage}}</b-form-invalid-feedback>
         </b-input-group>
+        
       </b-form-group>
       <b-form-group label="Units" label-for="units">
         <b-form-input id="units" v-model="$v.ingredientForm.units.$model" :state="validateState('units')"/>
@@ -38,6 +46,15 @@ const evaluatesToNumber = (value) => {
   } 
   return numericRegex.test(value.toString())
 }
+const greaterThanQuantityMinimum = (value, vm) => {
+  if(!value || !vm.quantityMin) {
+    return true
+  } else if(!numericRegex.test(value.toString()) || !numericRegex.test(vm.quantityMin)) {
+    return true
+  }
+  return eval(value) > eval(vm.quantityMin)
+}
+
 
 export default {
   name: 'IngredientForm',
@@ -57,7 +74,7 @@ export default {
     ingredientForm: {
       label: { required, maxLength: maxLength(64) },
       quantityMin: { evaluatesToNumber },
-      quantityMax: { evaluatesToNumber },
+      quantityMax: { evaluatesToNumber, greaterThanQuantityMinimum },
       units: { maxLength: maxLength(64) },
       optional: { required }
     }
@@ -70,11 +87,37 @@ export default {
     resetForm() {
       this.ingredientForm = JSON.parse(JSON.stringify(this.ingredient))
       this.$v.ingredientForm.$reset()
+    },
+    handleMinQuantityBlur() {
+      if(this.minQuantityEmpty) {
+        this.ingredientForm.quantityMin = this.ingredientForm.quantityMax
+        this.ingredientForm.quantityMax = null
+      }
     }
   },
   computed: {
     canSubmit: function() {
       return !this.$v.ingredientForm.$invalid
+    },
+    minQuantityEmpty: function() {
+      return !this.$v.ingredientForm.quantityMin.$model
+    },
+    minQuantityInvalid: function() {
+      return this.$v.ingredientForm.quantityMin.$invalid
+    },
+    quantityInvalidMessage: function() {
+      let errorMessages = []
+      if(!this.$v.ingredientForm.quantityMin.evaluatesToNumber) {
+        errorMessages.push('Minimum value must be a real, positive number')
+      }
+      if(!this.$v.ingredientForm.quantityMax.evaluatesToNumber) {
+        errorMessages.push('Maximum value must be a real, positive number')
+      }
+      if(!this.$v.ingredientForm.quantityMax.greaterThanQuantityMinimum) {
+        errorMessages.push('Maximum value must be greater than the minumum')
+      }
+
+      return errorMessages.join('\n')
     }
   }
 }
