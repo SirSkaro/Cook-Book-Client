@@ -18,9 +18,7 @@
             :disabled="minQuantityEmpty" 
             v-model="$v.ingredientForm.quantityMax.$model" 
             :state="validateState('quantityMax')"/>
-          <b-form-invalid-feedback id="quantityFeedback">{{quantityInvalidMessage}}</b-form-invalid-feedback>
         </b-input-group>
-        
       </b-form-group>
       <b-form-group label="Units" label-for="units">
         <b-form-input id="units" v-model="$v.ingredientForm.units.$model" :state="validateState('units')"/>
@@ -39,22 +37,6 @@
 import { validationMixin } from 'vuelidate'
 import { required, maxLength } from 'vuelidate/lib/validators'
 const modalId = 'ingredient-form-modal'
-const numericRegex = RegExp('^[0-9]+[.]?[0-9]*([/][0-9]+[.]?[0-9]*)*$')
-const evaluatesToNumber = (value) => {
-  if(!value) {
-    return true
-  } 
-  return numericRegex.test(value.toString())
-}
-const greaterThanQuantityMinimum = (value, vm) => {
-  if(!value || !vm.quantityMin) {
-    return true
-  } else if(!numericRegex.test(value.toString()) || !numericRegex.test(vm.quantityMin)) {
-    return true
-  }
-  return eval(value) > eval(vm.quantityMin)
-}
-
 
 export default {
   name: 'IngredientForm',
@@ -73,8 +55,8 @@ export default {
   validations: {
     ingredientForm: {
       label: { required, maxLength: maxLength(64) },
-      quantityMin: { evaluatesToNumber },
-      quantityMax: { evaluatesToNumber, greaterThanQuantityMinimum },
+      quantityMin: { },
+      quantityMax: { },
       units: { maxLength: maxLength(64) },
       optional: { required }
     }
@@ -101,23 +83,6 @@ export default {
     },
     minQuantityEmpty: function() {
       return !this.$v.ingredientForm.quantityMin.$model
-    },
-    minQuantityInvalid: function() {
-      return this.$v.ingredientForm.quantityMin.$invalid
-    },
-    quantityInvalidMessage: function() {
-      let errorMessages = []
-      if(!this.$v.ingredientForm.quantityMin.evaluatesToNumber) {
-        errorMessages.push('Minimum value must be a real, positive number')
-      }
-      if(!this.$v.ingredientForm.quantityMax.evaluatesToNumber) {
-        errorMessages.push('Maximum value must be a real, positive number')
-      }
-      if(!this.$v.ingredientForm.quantityMax.greaterThanQuantityMinimum) {
-        errorMessages.push('Maximum value must be greater than the minumum')
-      }
-
-      return errorMessages.join('\n')
     }
   }
 }
