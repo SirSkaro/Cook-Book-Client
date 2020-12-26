@@ -21,7 +21,7 @@
             <template #button-content><b-icon-tag-fill /> Choose tags</template>
             <b-dropdown-form>
               <b-form-group label="Search recipe tags">
-                <b-form-input
+                <b-form-input size="lg"
                   v-model="search" 
                   v-debounce:500="searchTags"
                   :readonly="searchPending"/>
@@ -29,7 +29,7 @@
             </b-dropdown-form>
             <b-dropdown-divider/>
             <div v-if="!searchPending">
-              <b-dropdown-item-button 
+              <b-dropdown-item-button
                 v-for="tag in availableTags" 
                 :key="getTagId(tag)" 
                 @click="onTagSelect(tag)">
@@ -37,7 +37,9 @@
               </b-dropdown-item-button>
             </div>
             <div v-if="searchPending">
-              <b-dropdown-item v-for="tag in availableTags" :key="getTagId(tag)"><b-skeleton/></b-dropdown-item>
+              <b-dropdown-item v-for="tag in availableTags" :key="getTagId(tag)">
+                <b-skeleton/>
+              </b-dropdown-item>
             </div>
             <b-dropdown-text v-if="!availableTags.length">
               There are no tags that match your search.

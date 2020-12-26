@@ -5,7 +5,7 @@
         <h4>Search by title</h4>
         <hr />
         <b-form-group>
-          <b-form-input 
+          <b-form-input size="lg"
             v-model="searchCriteria.title" 
             placeholder="Enter title. E.g. 'Hunter's Chili'"/>
         </b-form-group>
@@ -14,7 +14,7 @@
         <h4>Search by serving yield</h4>
         <hr />
         <b-form-group>
-          <b-form-input type="number"
+          <b-form-input type="number" size="lg"
             v-model="searchCriteria.serveCount" 
             placeholder="(Leave blank for any serving yield)"/>
         </b-form-group>
@@ -25,13 +25,13 @@
         <h4>Search by ingredients</h4>
         <hr />
           <b-form-group v-for="(ingredient, index) in searchCriteria.ingredients" v-bind:key="index">
-            <b-form-input 
+            <b-form-input size="lg"
               v-model="searchCriteria.ingredients[index]" 
               v-on:blur="handleIngredientBlur(index)"
               placeholder="Enter ingredient. E.g. 'garlic'"/>
           </b-form-group>
         <b-col v-if="showAddIngredient" align-self="center">
-          <b-button @click="addSearchIngredient()"><b-icon-plus-square/> Add ingredient to search</b-button>
+          <b-button @click="addSearchIngredient()" size="lg"><b-icon-plus-square/> Add ingredient to search</b-button>
         </b-col>
       </b-col>
       <b-col md="6">

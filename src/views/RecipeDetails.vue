@@ -7,9 +7,9 @@
           <b-button @click="goToCookbook()" size="lg" variant="outline-secondary"><b-icon-backspace/> Back to Recipes</b-button>
         </b-col>
         <b-col md="2" offset-md="7"> 
-          <b-button v-if="!isEditMode" variant="info" @click="startEdit()"><b-icon-pencil /></b-button>
-          <b-button v-if="isEditMode" variant="secondary" @click="cancelEdit()"><b-icon-eye /></b-button>
-          <b-button variant="danger" @click="showDeleteModal()">
+          <b-button size="lg" v-if="!isEditMode" variant="info" @click="startEdit()"><b-icon-pencil /></b-button>
+          <b-button size="lg" v-if="isEditMode" variant="secondary" @click="cancelEdit()"><b-icon-eye /></b-button>
+          <b-button size="lg" variant="danger" @click="showDeleteModal()">
             <b-icon-trash />
             <b-modal :id="deleteModalId"
               title="Delete Recipe" ok-variant="danger" ok-title="Yes, delete"

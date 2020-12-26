@@ -2,8 +2,8 @@
   <b-card :title="recipe.label" class="h-100">
     <b-card-text>{{recipe.shortDescription}}</b-card-text>
     <template #footer>
-      <b-button variant="secondary" @click="viewRecipeDetails()"><b-icon-eye/></b-button>
-      <b-button variant="info" @click="gotoEditRecipe()"><b-icon-pencil/></b-button>
+      <b-button size="lg" variant="secondary" @click="viewRecipeDetails()"><b-icon-eye/></b-button>
+      <b-button size="lg" variant="info" @click="gotoEditRecipe()"><b-icon-pencil/></b-button>
     </template>
   </b-card>
 </template>

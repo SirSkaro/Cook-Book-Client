@@ -6,13 +6,16 @@
     :ok-disabled="!canSubmit">
     <b-form>
       <b-form-group label="Ingredient" label-for="ingredient">
-        <b-form-input id="ingredient" v-model="$v.ingredientForm.label.$model" :state="validateState('label')"></b-form-input>
+        <b-form-input id="ingredient" v-model="$v.ingredientForm.label.$model" :state="validateState('label')"/>
       </b-form-group>
-      <b-form-group label="Quantity" label-for="quantity">
-        <b-form-input id="quantity" type="number" v-model="$v.ingredientForm.quantity.$model" :state="validateState('quantity')"></b-form-input>
+      <b-form-group label="Quantity" label-for="quantityMin">
+        <b-input-group>
+          <b-form-input id="quantityMin" type="number" v-model="$v.ingredientForm.quantityMin.$model" :state="validateState('quantityMin')" />
+          <b-form-input id="quantityMin" type="number" v-model="$v.ingredientForm.quantityMax.$model" :state="validateState('quantityMax')" />
+        </b-input-group>
       </b-form-group>
       <b-form-group label="Units" label-for="units">
-        <b-form-input id="units" v-model="$v.ingredientForm.units.$model" :state="validateState('units')"></b-form-input>
+        <b-form-input id="units" v-model="$v.ingredientForm.units.$model" :state="validateState('units')"/>
       </b-form-group>
       <b-form-group label="Optional" label-for="optional">
         <b-form-radio-group v-model="$v.ingredientForm.optional.$model">
@@ -46,7 +49,8 @@ export default {
   validations: {
     ingredientForm: {
       label: { required, maxLength: maxLength(64) },
-      quantity: { minValue: minValue(1/16) },
+      quantityMin: { minValue: minValue(1/16) },
+      quantityMax: { minValue: minValue(1/16) },
       units: { maxLength: maxLength(64) },
       optional: { required }
     }

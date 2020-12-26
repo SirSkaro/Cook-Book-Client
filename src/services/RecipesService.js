@@ -5,7 +5,8 @@ const RESOURCE = '/recipes';
 export default {
     getPage(page) {
         let queryParams = {
-            page: page
+            page: page,
+            sort: 'label,asc'
           }
         return Axios.get(RESOURCE, {params: queryParams})
             .then((response) => response.data)
@@ -13,6 +14,7 @@ export default {
     searchPage(page, searchParams) {
         let query = [];
         query.push('page='+page)
+        query.push('sort=label,asc')
         if(searchParams.title) {
             query.push('label='+searchParams.title)
         }

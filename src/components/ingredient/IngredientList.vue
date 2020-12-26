@@ -19,10 +19,10 @@
           </b-tr>
         </b-thead>
         <b-tbody>
-          <b-tr v-for="ingredient in ingredients" v-bind:key="getIngredientId(ingredient)">
-            <b-td :variant="getRowVariant(ingredient)">{{ingredient.quantity}}</b-td>
-            <b-td :variant="getRowVariant(ingredient)">{{ingredient.units}}</b-td>
-            <b-td :variant="getRowVariant(ingredient)">{{ingredient.optional ? ' (optional)' : ''}} {{ingredient.label}}</b-td>
+          <b-tr v-for="ingredient in ingredients" v-bind:key="getIngredientId(ingredient)" :variant="getRowVariant(ingredient)">
+            <b-td>{{formatQuantityRange(ingredient)}}</b-td>
+            <b-td>{{ingredient.units}}</b-td>
+            <b-td>{{formatIngredientLabel(ingredient)}}</b-td>
             <b-td v-if="isEditMode">
               <b-button v-if="isEditMode" variant="info" @click="edit(ingredient)"><b-icon-pencil/></b-button>
               <b-button v-if="isEditMode" variant="danger" @click="remove(ingredient)"><b-icon-trash/></b-button>
@@ -75,6 +75,14 @@ export default {
     getRowVariant(ingredient) {
       return ingredient.optional ? 'warning' : 'default'
     },
+    formatQuantityRange(ingredient) {
+      let quantityLowerBoundFormatted = (ingredient.quantityMin ? ingredient.quantityMin : '')
+      let quantityUpperBoundFormatted = (ingredient.quantityMax ? (' - ' + ingredient.quantityMax) : '')
+      return quantityLowerBoundFormatted + quantityUpperBoundFormatted
+    },
+    formatIngredientLabel(ingredient) {
+      return ingredient.label + (ingredient.optional ? ' (optional)' : '')
+    },
     edit(ingredient) {
       this.selectedIngredient = ingredient;
       this.$bvModal.show(IngredientForm.modalId);
@@ -87,7 +95,7 @@ export default {
       this.selectedIngredient = {
         label: null,
         optional: false,
-        quantity: null,
+        quantityMin: null,
         units: null
       }
       this.$bvModal.show(IngredientForm.modalId);
