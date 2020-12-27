@@ -1,15 +1,14 @@
 <template>
   <b-container>
     <h1>Manage Recipe Tags</h1>
-    <b-alert dismissible v-model="alertConfig.countdown" variant="danger">{{alertConfig.message}}</b-alert>
-    <LoadingScreen :show="hasPendingCall">
-      <b-row>
+    <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
+      <b-row class="mt-3">
         <b-col md="3" offset-md="9"> 
           <b-button size="lg" variant="primary" @click="setupModalAdd()" v-b-modal.tag-modal><b-icon-plus-square></b-icon-plus-square> Add Tag</b-button>
         </b-col>
       </b-row>
 
-      <b-row>
+      <b-row class="mt-3">
         <b-col md="12">
           <b-table striped hover fixed :items="tags" :fields="tableFields">
             <template #cell(actions)="row">
@@ -20,7 +19,7 @@
         </b-col>
       </b-row>
 
-      <b-row>
+      <b-row class="mt-3">
         <b-col md="12">
           <b-pagination align="center"
             v-model="pageConfig.currentPage"
@@ -75,10 +74,6 @@ export default {
       form: {
         label: null
       },
-      alertConfig: {
-        message: null,
-        countdown: 0
-      },
       hasPendingCall: false
     }
   },
@@ -100,7 +95,7 @@ export default {
     }
   },
   methods: {
-    loadTags: function() {
+    loadTags() {
         return TagsService.getPage(this.pageConfig.currentPage - 1)
           .then(tagsPage =>{
             this.tags = tagsPage._embedded.tags
@@ -112,6 +107,7 @@ export default {
     saveTag() {
       this.togglePendingCall()
       return TagsService.save(this.form)
+        .then(() => this.showSuccessBanner('Tag saved'))
         .catch(() => this.showErrorBanner('Unable to save tag'))
         .then(this.loadTags)
         .finally(this.togglePendingCall)
@@ -119,6 +115,7 @@ export default {
     deleteTag() {
       this.togglePendingCall()
       return TagsService.delete(this.form)
+        .then(() => this.showSuccessBanner('Tag deleted'))
         .catch(() => this.showErrorBanner('Unable to delete tag'))
         .then(this.loadTags)
         .finally(this.togglePendingCall)
@@ -136,8 +133,10 @@ export default {
       return $dirty ? !$error : null;
     },
     showErrorBanner(message) {
-      this.alertConfig.message = message;
-      this.alertConfig.countdown = 5;
+      this.$refs.loadingScreen.showError(message)
+    },
+    showSuccessBanner(message) {
+      this.$refs.loadingScreen.showSuccess(message)
     },
     togglePendingCall() {
       this.hasPendingCall = !this.hasPendingCall;
