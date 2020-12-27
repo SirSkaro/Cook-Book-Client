@@ -7,12 +7,15 @@
           <p>Brewing data...</p>
         </div>
         <b-alert v-model="errorAlertConfig.countdown" variant="danger">
-          <b-icon-exclamation-triangle font-scale="5" animation="fade" variant="danger" />
+          <b-iconstack font-scale="5">
+             <b-icon-cup stacked variant="info" />
+            <b-icon-exclamation-triangle stacked animation="fade" variant="danger" />
+          </b-iconstack>
           <p>{{errorAlertConfig.message}}</p>
         </b-alert>
         <b-alert v-model="successAlertConfig.countdown" variant="success">
           <b-iconstack font-scale="5">
-            <b-icon-cloud stacked variant="info" />
+            <b-icon-cup stacked variant="info" />
             <b-icon-check2 stacked animation="throb" variant="success" />
           </b-iconstack>
           <p>{{successAlertConfig.message}}</p>
@@ -27,7 +30,6 @@
 import {
   BIconCup,
   BIconExclamationTriangle,
-  BIconCloud,
   BIconCheck2,
   BIconstack
 } from "bootstrap-vue";
@@ -52,7 +54,6 @@ export default {
   components: {
     BIconCup,
     BIconExclamationTriangle,
-    BIconCloud,
     BIconCheck2,
     BIconstack
   },
