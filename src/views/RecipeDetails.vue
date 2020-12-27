@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <LoadingScreen :show="hasPendingCall">
+    <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
       <h1>Recipe Details</h1>
       <b-row>
         <b-col md="3">
@@ -98,6 +98,12 @@ export default {
     togglePendingCall() {
       this.hasPendingCall = !this.hasPendingCall;
     },
+    showErrorBanner(message) {
+      this.$refs.loadingScreen.showError(message)
+    },
+    showSuccessBanner(message) {
+      this.$refs.loadingScreen.showSuccess(message)
+    },
     startEdit() {
       this.isEditMode = true;
     },
@@ -111,6 +117,7 @@ export default {
       return this.fetchRecipe()
         .then(this.fetchIngredients)
         .then(this.fetchTags)
+        .catch(() => this.showErrorBanner('Unable to fetch all recipe info'))
     },
     fetchRecipe() {
       let recipeId = this.$route.params.id;
@@ -129,29 +136,39 @@ export default {
       this.togglePendingCall()
       return RecipesService.save(this.recipe)
         .then(recipe => this.recipe = recipe)
+        .then(() => this.showSuccessBanner('Recipe saved'))
+        .catch(() => this.showErrorBanner('Unable to save recipe'))
         .finally(this.togglePendingCall)
     },
     saveIngredient(ingredient) {
       this.togglePendingCall()
       return IngredientsService.save(ingredient, this.recipe)
+        .then(() => this.showSuccessBanner('Ingredient saved'))
+        .catch(() => this.showErrorBanner('Unable to save ingredient'))
         .then(this.fetchData)
         .finally(this.togglePendingCall)
     },
     deleteIngredient(ingredient) {
       this.togglePendingCall()
       return IngredientsService.delete(ingredient)
+        .then(() => this.showSuccessBanner('Ingredient deleted'))
+        .catch(() => this.showErrorBanner('Unable to delete ingredient'))
         .then(this.fetchData)
         .finally(this.togglePendingCall)
     },
     addTag(tag) {
       this.togglePendingCall()
       return RecipesService.addTag(this.recipe, tag)
+        .then(() => this.showSuccessBanner('Tag added'))
+        .catch(() => this.showErrorBanner('Unable to add tag'))
         .then(this.fetchData)
         .finally(this.togglePendingCall)
     },
     deleteTag(tag) {
       this.togglePendingCall()
       return RecipesService.deleteTag(this.recipe, tag)
+        .then(() => this.showSuccessBanner('Tag removed'))
+        .catch(() => this.showErrorBanner('Unable to remove tag'))
         .then(this.fetchData)
         .finally(this.togglePendingCall)
     },
@@ -162,7 +179,8 @@ export default {
       this.togglePendingCall()
       return RecipesService.delete(this.recipe)
         .then(this.goToCookbook)
-        .catch(this.togglePendingCall)
+        .catch(() => this.showErrorBanner('Unable to delete recipe'))
+        .finally(this.togglePendingCall)
     },
     goToCookbook() {
       this.$router.push({name: 'CookBook'})
