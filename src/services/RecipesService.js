@@ -23,7 +23,9 @@ export default {
             query.push('tags.label=' + tagList)
         }
         if(searchParams.ingredients.length) {
-            let ingredientList = searchParams.ingredients.join(',')
+            let ingredientList = searchParams.ingredients
+                .filter(ingredient => ingredient != null)
+                .join(',')
             query.push('ingredients.label=' + ingredientList)
         }
         if(searchParams.serveCount) {

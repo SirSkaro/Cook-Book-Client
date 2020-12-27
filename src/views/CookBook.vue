@@ -1,7 +1,7 @@
 <template>
   <b-container>
-    <h1>Recipes</h1>
-    <LoadingScreen :show="hasPendingCall">
+    <h1>Cook Book</h1>
+    <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
       <b-row class="mt-3">
         <b-col md="3" offset-md="9"> 
           <b-button size="lg" variant="primary" @click="openNewRecipeForm()"><b-icon-plus-square/> Add Recipe</b-button>
@@ -97,7 +97,7 @@ export default {
             this.pageConfig.currentPage = recipePage.page.number + 1
             this.pageConfig.itemsPerPage = recipePage.page.size
             this.pageConfig.totalItems = recipePage.page.totalElements
-        })
+        }).catch(() => this.showErrorBanner('Unable to load recipes'))
     },
     clearSearch() {
       this.searchCriteria.tags = []
@@ -109,12 +109,16 @@ export default {
     togglePendingCall() {
       this.hasPendingCall = !this.hasPendingCall;
     },
+    showErrorBanner(message) {
+      this.$refs.loadingScreen.showError(message)
+    },
     openNewRecipeForm() {
       this.$bvModal.show(NewRecipeForm.modalId);
     },
     createRecipe(recipe) {
       this.togglePendingCall()
       return RecipesService.save(recipe)
+        .catch(() => this.showErrorBanner('Unable to create new recipe'))
         .then(this.goToNewRecipe)
         .catch(this.togglePendingCall)
     },
