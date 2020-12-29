@@ -1,10 +1,10 @@
 <template>
   <div>
-    <b-jumbotron header="Jena's Cookbook" lead="The Coffey (one-stop) shop for Jena's collection of home-cooked meals and treats">
+    <b-jumbotron header="Jena's Recipes" lead="The Coffey (one-stop) shop for Jena's collection of home-cooked meals and treats">
       <p>Use the cards below order the navigation bar above to get started</p>
       <b-card-group deck>
         <b-card>
-          <template #header><h4 class="mb-0">Jena's Recipies</h4></template>
+          <template #header><h4 class="mb-0">Cookbook</h4></template>
           <b-card-text>View, create, and change your recipes. Search through your recipes quickly and easily by name, ingredients, and custom categories.</b-card-text>
           <b-button href="#/cookbook" variant="primary">Go to Recipies</b-button>
         </b-card>

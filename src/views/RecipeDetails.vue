@@ -126,7 +126,10 @@ export default {
     },
     fetchIngredients() {
       return RecipesService.getIngredients(this.recipe)
-        .then(ingredients => {this.ingredients = ingredients})
+        .then(ingredients => {
+          this.ingredients = ingredients
+          this.ingredients.sort((ingredient1, ingredient2 ) => ingredient1.sortOrder - ingredient2.sortOrder)
+        })
     },
     fetchTags() {
       return RecipesService.getTags(this.recipe)

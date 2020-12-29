@@ -19,13 +19,15 @@
           </b-tr>
         </b-thead>
         <b-tbody>
-          <b-tr v-for="ingredient in ingredients" v-bind:key="getIngredientId(ingredient)" :variant="getRowVariant(ingredient)">
+          <b-tr v-for="(ingredient, index) in ingredients" v-bind:key="getIngredientId(ingredient)" :variant="getRowVariant(ingredient)">
             <b-td>{{formatQuantityRange(ingredient)}}</b-td>
             <b-td>{{ingredient.units}}</b-td>
             <b-td>{{formatIngredientLabel(ingredient)}}</b-td>
             <b-td v-if="isEditMode">
-              <b-button v-if="isEditMode" variant="info" @click="edit(ingredient)"><b-icon-pencil/></b-button>
-              <b-button v-if="isEditMode" variant="danger" @click="remove(ingredient)"><b-icon-trash/></b-button>
+              <b-button variant="info" @click="edit(ingredient)"><b-icon-pencil/></b-button>
+              <b-button variant="danger" @click="remove(ingredient)"><b-icon-trash/></b-button>
+              <b-button variant="secondary" @click="increaseOrderPriority(index)" :disabled="ingredientIsHighestPriority(ingredient)"><b-icon-arrow-up-circle-fill/></b-button>
+              <b-button variant="secondary" @click="decreaseOrderPriority(index)" :disabled="ingredientIsLowestPriority(ingredient)"><b-icon-arrow-down-circle-fill/></b-button>
             </b-td>
           </b-tr>
         </b-tbody>
@@ -46,7 +48,8 @@
 
 <script>
 import IngredientsService from '../../services/IngredientsService.js'
-import { BIconPencil, BIconTrash, BIconPlusSquare } from 'bootstrap-vue'
+import { BIconPencil, BIconTrash, BIconPlusSquare,
+   BIconArrowUpCircleFill, BIconArrowDownCircleFill } from 'bootstrap-vue'
 import IngredientForm from './IngredientForm'
 const deleteModalId = 'delete-ingredient-modal'
 
@@ -66,7 +69,8 @@ export default {
   },
   components: {
     IngredientForm, 
-    BIconPencil, BIconTrash, BIconPlusSquare
+    BIconPencil, BIconTrash, BIconPlusSquare,
+    BIconArrowUpCircleFill, BIconArrowDownCircleFill
   },
   methods: {
     getIngredientId(ingredient) {
@@ -91,14 +95,46 @@ export default {
       this.selectedIngredient = ingredient;
       this.$bvModal.show(deleteModalId);
     },
+    increaseOrderPriority(index) {
+      let ingredientToMoveUp = this.ingredients[index]
+      let ingredientToMoveDown = this.ingredients[index - 1]
+      ingredientToMoveUp.sortOrder -= 1
+      ingredientToMoveDown.sortOrder += 1
+
+      Promise.all([this.handleSave(ingredientToMoveUp), this.handleSave(ingredientToMoveDown)])
+    },
+    decreaseOrderPriority(index) {
+      let ingredientToMoveDown = this.ingredients[index]
+      let ingredientToMoveUp = this.ingredients[index + 1]
+      ingredientToMoveUp.sortOrder -= 1
+      ingredientToMoveDown.sortOrder += 1
+
+      Promise.all([this.handleSave(ingredientToMoveUp), this.handleSave(ingredientToMoveDown)])
+    },
+    ingredientIsHighestPriority(ingredient) {
+      return ingredient.sortOrder == 1
+    },
+    ingredientIsLowestPriority(ingredient) {
+      return ingredient.sortOrder == this.ingredients[this.ingredients.length - 1].sortOrder
+    },
     create() {
       this.selectedIngredient = {
         label: null,
         optional: false,
         quantityMin: null,
-        units: null
+        units: null,
+        sortOrder: this.nextLowestSortPriority
       }
       this.$bvModal.show(IngredientForm.modalId);
+    }
+  },
+  computed: {
+    nextLowestSortPriority: function() {
+      let numberOfIngredients = this.ingredients.length;
+      if(numberOfIngredients == 0) {
+        return 1;
+      }
+      return this.ingredients[numberOfIngredients - 1].sortOrder + 1;
     }
   }
 }

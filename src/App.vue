@@ -3,7 +3,7 @@
     <b-navbar fixed="top" variant="primary">
       <b-navbar-brand href="#/">Jena's Recipes</b-navbar-brand>
       <b-navbar-nav>
-        <b-nav-item href="#/cookbook">Cook Book</b-nav-item>
+        <b-nav-item href="#/cookbook">Cookbook</b-nav-item>
       </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right>
