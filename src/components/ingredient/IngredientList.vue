@@ -9,21 +9,21 @@
       </b-col>
     </b-row>
     <b-row class="mt-3">
-      <b-table-simple fixed>
+      <b-table-simple fixed striped>
         <b-thead>
           <b-tr>
             <b-th>Quantity</b-th>
             <b-th>Units</b-th>
-            <b-th>Ingredient</b-th>
-            <b-th v-if="isEditMode"></b-th>
+            <b-th :colspan="ingredientColumnSpan" class="text-left">Ingredient</b-th>
+            <b-th colspan="2" v-if="isEditMode"></b-th>
           </b-tr>
         </b-thead>
         <b-tbody>
           <b-tr v-for="(ingredient, index) in ingredients" v-bind:key="getIngredientId(ingredient)" :variant="getRowVariant(ingredient)">
             <b-td>{{formatQuantityRange(ingredient)}}</b-td>
             <b-td>{{ingredient.units}}</b-td>
-            <b-td>{{formatIngredientLabel(ingredient)}}</b-td>
-            <b-td v-if="isEditMode">
+            <b-td :colspan="ingredientColumnSpan" class="text-left">{{formatIngredientLabel(ingredient)}}</b-td>
+            <b-td v-if="isEditMode" colspan="2">
               <b-button-group>
                 <b-button variant="info" @click="edit(ingredient)"><b-icon-pencil/></b-button>
                 <b-button variant="danger" @click="remove(ingredient)"><b-icon-trash/></b-button>
@@ -140,6 +140,9 @@ export default {
         return 1;
       }
       return this.ingredients[numberOfIngredients - 1].sortOrder + 1;
+    },
+    ingredientColumnSpan: function() {
+      return this.isEditMode ? 3 : 5
     }
   }
 }
