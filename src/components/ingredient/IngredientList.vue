@@ -24,17 +24,21 @@
             <b-td>{{ingredient.units}}</b-td>
             <b-td>{{formatIngredientLabel(ingredient)}}</b-td>
             <b-td v-if="isEditMode">
-              <b-button variant="info" @click="edit(ingredient)"><b-icon-pencil/></b-button>
-              <b-button variant="danger" @click="remove(ingredient)"><b-icon-trash/></b-button>
-              <b-button variant="secondary" @click="increaseOrderPriority(index)" :disabled="ingredientIsHighestPriority(ingredient)"><b-icon-arrow-up-circle-fill/></b-button>
-              <b-button variant="secondary" @click="decreaseOrderPriority(index)" :disabled="ingredientIsLowestPriority(ingredient)"><b-icon-arrow-down-circle-fill/></b-button>
+              <b-button-group>
+                <b-button variant="info" @click="edit(ingredient)"><b-icon-pencil/></b-button>
+                <b-button variant="danger" @click="remove(ingredient)"><b-icon-trash/></b-button>
+              </b-button-group>
+              <b-button-group class="ml-1">
+                <b-button variant="secondary" @click="increaseOrderPriority(index)" :disabled="ingredientIsHighestPriority(ingredient)"><b-icon-arrow-up-circle-fill/></b-button>
+                <b-button variant="secondary" @click="decreaseOrderPriority(index)" :disabled="ingredientIsLowestPriority(ingredient)"><b-icon-arrow-down-circle-fill/></b-button>
+              </b-button-group>
             </b-td>
           </b-tr>
         </b-tbody>
       </b-table-simple>
     </b-row>
 
-    <IngredientForm :ingredient="selectedIngredient" :handle-submit="handleSave"/>
+    <IngredientForm :ingredient="selectedIngredient" :handle-submit="handleSingleSave"/>
     <b-modal :id="deleteModalId"
       title="Remove ingredient"
       ok-variant="danger"
@@ -58,7 +62,8 @@ export default {
   props: {
     isEditMode: {type: Boolean, default: false},
     ingredients: {type: Array, required: true},
-    handleSave: {type: Function, required: true},
+    handleSingleSave: {type: Function, required: true},
+    handleMultiSave: {type: Function, required: true},
     handleDelete: {type: Function, required: true}
   },
   data() {
@@ -101,7 +106,7 @@ export default {
       ingredientToMoveUp.sortOrder -= 1
       ingredientToMoveDown.sortOrder += 1
 
-      Promise.all([this.handleSave(ingredientToMoveUp), this.handleSave(ingredientToMoveDown)])
+      return this.handleMultiSave([ingredientToMoveUp, ingredientToMoveDown])
     },
     decreaseOrderPriority(index) {
       let ingredientToMoveDown = this.ingredients[index]
@@ -109,7 +114,7 @@ export default {
       ingredientToMoveUp.sortOrder -= 1
       ingredientToMoveDown.sortOrder += 1
 
-      Promise.all([this.handleSave(ingredientToMoveUp), this.handleSave(ingredientToMoveDown)])
+      return this.handleMultiSave([ingredientToMoveUp, ingredientToMoveDown])
     },
     ingredientIsHighestPriority(ingredient) {
       return ingredient.sortOrder == 1

@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container class="mt-5">
     <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
       <h1>Recipe Details</h1>
       <b-row>
@@ -36,7 +36,8 @@
           <b-card bg-variant="light">
             <IngredientList :is-edit-mode="isEditMode" 
               v-bind:ingredients="ingredients"
-              :handle-save="saveIngredient"
+              :handle-single-save="saveIngredient"
+              :handle-multi-save="saveIngredients"
               :handle-delete="deleteIngredient"/>
           </b-card>
         </b-col>
@@ -144,10 +145,14 @@ export default {
         .finally(this.togglePendingCall)
     },
     saveIngredient(ingredient) {
+      return this.saveIngredients([ingredient])
+    },
+    saveIngredients(ingredients) {
+      let savePromises = ingredients.map(ingredient => IngredientsService.save(ingredient, this.recipe))
       this.togglePendingCall()
-      return IngredientsService.save(ingredient, this.recipe)
-        .then(() => this.showSuccessBanner('Ingredient saved'))
-        .catch(() => this.showErrorBanner('Unable to save ingredient'))
+      return Promise.all(savePromises)
+        .then(() => this.showSuccessBanner('Ingredients saved'))
+        .catch(() => this.showErrorBanner('Unable to save ingredients'))
         .then(this.fetchData)
         .finally(this.togglePendingCall)
     },
