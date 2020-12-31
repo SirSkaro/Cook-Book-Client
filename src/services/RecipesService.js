@@ -58,6 +58,10 @@ export default {
         return Axios.get(recipe._links.ingredients.href)
             .then(response => response.data._embedded.ingredients)
     },
+    getExport(recipe) {
+        return Axios.get(recipe._links.export.href)
+            .then(response => response.data)
+    },
     addTag(recipe, tag) {
         let recipeTagsUrl = recipe._links.tags.href
         let tagSelfRef = tag._links.self.href

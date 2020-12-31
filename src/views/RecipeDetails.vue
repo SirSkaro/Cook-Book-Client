@@ -6,18 +6,21 @@
         <b-col md="3">
           <b-button @click="goToCookbook()" size="lg" variant="outline-secondary"><b-icon-backspace/> Back to Recipes</b-button>
         </b-col>
-        <b-col md="2" offset-md="7"> 
-          <b-button size="lg" v-if="!isEditMode" variant="info" @click="startEdit()"><b-icon-pencil /></b-button>
-          <b-button size="lg" v-if="isEditMode" variant="secondary" @click="cancelEdit()"><b-icon-eye /></b-button>
-          <b-button size="lg" variant="danger" @click="showDeleteModal()">
-            <b-icon-trash />
-            <b-modal :id="deleteModalId"
-              title="Delete Recipe" ok-variant="danger" ok-title="Yes, delete"
-              @ok="deleteRecipe">
-              <p>You are about to delete the recipe <b>{{recipe.label}}</b>.</p>
-              <p>Are you sure you want to remove this recipe?</p>
-            </b-modal>
-          </b-button>
+        <b-col md="3" offset-md="6">
+          <b-button-group>
+            <b-button size="lg" v-if="!isEditMode" variant="secondary" @click="downloadExport()"><b-icon-printer /></b-button>
+            <b-button size="lg" v-if="!isEditMode" variant="info" @click="startEdit()"><b-icon-pencil /></b-button>
+            <b-button size="lg" v-if="isEditMode" variant="secondary" @click="cancelEdit()"><b-icon-eye /></b-button>
+            <b-button size="lg" variant="danger" @click="showDeleteModal()">
+              <b-icon-trash />
+              <b-modal :id="deleteModalId"
+                title="Delete Recipe" ok-variant="danger" ok-title="Yes, delete"
+                @ok="deleteRecipe">
+                <p>You are about to delete the recipe <b>{{recipe.label}}</b>.</p>
+                <p>Are you sure you want to remove this recipe?</p>
+              </b-modal>
+            </b-button>
+          </b-button-group>
         </b-col>
       </b-row>
       <b-row class="mt-3">
@@ -66,7 +69,7 @@ import IngredientsService from '../services/IngredientsService.js'
 import IngredientList from '../components/ingredient/IngredientList'
 import TagForm from '../components/tag/TagForm'
 import { BIconCloudUpload, BIconBackspace, BIconPencil,
-  BIconSlashCircle, BIconEye, BIconTrash } from 'bootstrap-vue'
+  BIconSlashCircle, BIconEye, BIconTrash, BIconPrinter } from 'bootstrap-vue'
 const deleteModalId = 'delete-recipe-modal'
 
 export default {
@@ -74,7 +77,8 @@ export default {
   components: {
     RecipeForm, TagForm, LoadingScreen,
     IngredientList,
-    BIconCloudUpload, BIconBackspace, BIconPencil, BIconSlashCircle, BIconEye, BIconTrash
+    BIconCloudUpload, BIconBackspace, BIconPencil, 
+    BIconSlashCircle, BIconEye, BIconTrash, BIconPrinter
   },
   props: {
     editMode: { type: Boolean, default: false}
@@ -192,6 +196,18 @@ export default {
     },
     goToCookbook() {
       this.$router.push({name: 'CookBook'})
+    },
+    downloadExport() {
+      this.togglePendingCall()
+      return RecipesService.getExport(this.recipe)
+        .then(recipeExport => fetch("data:application/pdf;base64," + recipeExport.exportFile))
+        .then(file => file.blob())
+        .then(fileBlob =>  {
+          let fileUrl = URL.createObjectURL(fileBlob)
+          window.open(fileUrl)
+        }).then(() => this.showSuccessBanner('Recipe downloaded'))
+        .catch(() => this.showErrorBanner('Unable to download recipe'))
+        .finally(this.togglePendingCall)
     }
   }
 
