@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh 'docker stop cookbook-client || true && docker rm cookbook-client || true'
                 sh 'docker run -d \
-                	-p 9001:80 \
+                	-p 1963:80 \
                 	--network casa-net \
                 	--name cookbook-client \
                 	--restart always \

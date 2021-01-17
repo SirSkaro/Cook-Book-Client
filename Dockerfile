@@ -18,4 +18,4 @@ COPY . .
 # build app for production with minification
 RUN npm run build
 
-CMD [ "http-server -p 80", "dist"]
+CMD [ "http-server", "dist"]
