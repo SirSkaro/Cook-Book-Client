@@ -18,12 +18,15 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh 'docker stop cookbook-client || true && docker rm cookbook-client || true'
-                sh 'docker run -d \
-                	-p 1963:80 \
-                	--network casa-net \
-                	--name cookbook-client \
-                	--restart always \
-                	cookbook-client'
+                withCredentials([string(credentialsId: 'e6484059-0aa9-45ca-a270-e8d2ae719ecc', variable: 'serverName')]) {
+                    sh 'docker run -d \
+                        --expose 80 \
+                        --network casa-net \
+                        --name cookbook-client \
+                        --restart always \
+                        -e VIRTUAL_HOST=$serverName
+                        cookbook-client'
+                }
             }
         }
     }
