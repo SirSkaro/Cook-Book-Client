@@ -24,7 +24,7 @@ pipeline {
                         --network casa-net \
                         --name cookbook-client \
                         --restart always \
-                        -e VIRTUAL_HOST=$serverName
+                        -e VIRTUAL_HOST=$serverName \
                         cookbook-client'
                 }
             }
