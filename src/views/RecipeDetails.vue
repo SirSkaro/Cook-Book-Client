@@ -25,23 +25,23 @@
       </b-row>
       <b-row class="mt-3">
         <b-col md="12">
-          <b-card bg-variant="light"> 
-            <RecipeForm :recipe="recipe" :is-edit-mode="isEditMode"/>
-            <b-col md="5" offset-md="7">
-              <b-button v-if="isEditMode" size="lg" variant="primary" @click="saveRecipe()"><b-icon-cloud-upload/> Save</b-button>
-              <b-button v-if="isEditMode" size="lg" variant="danger" @click="cancelEdit()"><b-icon-slash-circle/> Discard Changes</b-button>
-            </b-col>
-          </b-card>
-        </b-col>
-      </b-row>
-      <b-row class="mt-3">
-        <b-col md="12">
           <b-card bg-variant="light">
             <IngredientList :is-edit-mode="isEditMode" 
               v-bind:ingredients="ingredients"
               :handle-single-save="saveIngredient"
               :handle-multi-save="saveIngredients"
               :handle-delete="deleteIngredient"/>
+          </b-card>
+        </b-col>
+      </b-row>
+      <b-row class="mt-3">
+        <b-col md="12">
+          <b-card bg-variant="light"> 
+            <RecipeForm :recipe="recipe" :is-edit-mode="isEditMode"/>
+            <b-col md="5" offset-md="7">
+              <b-button v-if="isEditMode" size="lg" variant="primary" @click="saveRecipe()"><b-icon-cloud-upload/> Save</b-button>
+              <b-button v-if="isEditMode" size="lg" variant="danger" @click="cancelEdit()"><b-icon-slash-circle/> Discard Changes</b-button>
+            </b-col>
           </b-card>
         </b-col>
       </b-row>

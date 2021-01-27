@@ -3,9 +3,10 @@ import Axios from 'axios';
 const RESOURCE = '/tags';
 
 export default {
-    getPage(page) {
+    getPage(page, pageSize) {
         let queryParams = {
             page: page,
+            size: pageSize,
             sort: 'label,asc'
           }
         return Axios.get(RESOURCE, {params: queryParams})

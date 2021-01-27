@@ -111,7 +111,7 @@ export default {
           .then(tags => {this.allPossibleOptions = tags})
     },
     getInitalSetOfTags() {
-      return TagsService.getPage(0)
+      return TagsService.getPage(0, 15)
         .then(tags => {this.allPossibleOptions = tags._embedded.tags})
     },
     getTagId(tag) {
