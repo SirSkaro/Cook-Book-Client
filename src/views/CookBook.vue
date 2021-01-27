@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <h1>Cookbooks</h1>
+    <h1>Cookbook</h1>
     <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
       <b-row class="mt-3">
         <b-col md="3" offset-md="9"> 
@@ -84,13 +84,12 @@ export default {
     RecipeCard, NewRecipeForm, RecipeFilterForm
   },
   created() {
-    this.togglePendingCall()
     this.loadRecipes()
-      .finally(this.togglePendingCall)
   },
   methods: {
     loadRecipes() {
       let page = this.pageConfig.currentPage - 1
+      this.togglePendingCall()
       return RecipesService.searchPage(page, this.searchCriteria)
         .then(recipePage => {
             this.recipes = recipePage._embedded.recipes;
@@ -98,6 +97,7 @@ export default {
             this.pageConfig.itemsPerPage = recipePage.page.size
             this.pageConfig.totalItems = recipePage.page.totalElements
         }).catch(() => this.showErrorBanner('Unable to load recipes'))
+        .finally(this.togglePendingCall)
     },
     clearSearch() {
       this.searchCriteria.tags = []
@@ -138,6 +138,6 @@ export default {
 
 <style scoped>
 .uniform-card {
-  height: 325px;
+  height: 425px;
 }
 </style>

@@ -84,7 +84,7 @@ export default {
   },
   validations: {
     recipeForm: {
-      label: { required, maxLength: maxLength(255) },
+      label: { required, maxLength: maxLength(50) },
       shortDescription: { required, maxLength: maxLength(200) },
       serveCount: { minValue: minValue(1), maxValue: maxValue(99), integer: integer},
       source: {},
