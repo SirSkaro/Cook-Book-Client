@@ -15,6 +15,7 @@ export default {
         let query = [];
         query.push('page='+page)
         query.push('sort=label,asc')
+        query.push('size=16')
         if(searchParams.title) {
             query.push('label='+searchParams.title)
         }

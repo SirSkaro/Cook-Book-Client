@@ -97,6 +97,7 @@ export default {
             this.pageConfig.itemsPerPage = recipePage.page.size
             this.pageConfig.totalItems = recipePage.page.totalElements
         }).catch(() => this.showErrorBanner('Unable to load recipes'))
+        .then(this.scrollToTop)
         .finally(this.togglePendingCall)
     },
     clearSearch() {
@@ -131,6 +132,9 @@ export default {
         params: {id: RecipesService.getId(recipe), editMode: true}
       }
       this.$router.push(routeConfig)
+    },
+    scrollToTop() {
+      window.scrollTo(0,0)
     }
   }
 }
