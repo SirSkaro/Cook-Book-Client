@@ -6,7 +6,7 @@
     :ok-disabled="!canSubmit">
     <b-form>
       <b-form-group label="Ingredient" label-for="ingredient">
-        <b-form-input id="ingredient" v-model="$v.ingredientForm.label.$model" :state="validateState('label')"/>
+        <b-form-input id="ingredient" autofocus v-model="$v.ingredientForm.label.$model" :state="validateState('label')"/>
       </b-form-group>
       <b-form-group label="Quantity" label-for="quantity">
         <b-input-group>

@@ -1,16 +1,18 @@
 <template>
   <div>
     <b-form>
-      <b-col md="12">
-        <b-form-group label="Title" label-for="title" label-align="left" label-class="font-weight-bold">
-          <b-form-input id="title" 
-            v-model="$v.recipeForm.label.$model" 
-            :state="validateState('label')"
-            :plaintext="!isEditMode"></b-form-input>
-          <b-form-invalid-feedback>Your recipe needs a title!</b-form-invalid-feedback>
-        </b-form-group>
-      </b-col>
-      <hr />
+      <div v-if="isEditMode">
+        <b-col md="12">
+          <b-form-group label="Title" label-for="title" label-align="left" label-class="font-weight-bold">
+            <b-form-input id="title"
+              v-model="$v.recipeForm.label.$model" 
+              :state="validateState('label')">
+            </b-form-input>
+            <b-form-invalid-feedback>Your recipe needs a title!</b-form-invalid-feedback>
+          </b-form-group>
+        </b-col>
+        <hr />
+      </div>
       <b-col md="3">
         <b-form-group label="Serving Yield" label-align="left" label-class="font-weight-bold">
           <b-form-input id="serveCount" 

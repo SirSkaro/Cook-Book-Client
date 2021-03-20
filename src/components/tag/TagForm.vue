@@ -22,6 +22,7 @@
             <b-dropdown-form>
               <b-form-group label="Search recipe tags">
                 <b-form-input size="lg"
+                  autofocus
                   v-model="search" 
                   v-debounce:500="searchTags"
                   :readonly="searchPending"/>

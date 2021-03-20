@@ -1,7 +1,7 @@
 <template>
   <b-container class="mt-5">
     <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
-      <h1>Recipe Details</h1>
+      <h1>{{recipe.label}}</h1>
       <b-row>
         <b-col md="3">
           <b-button @click="goToCookbook()" size="lg" variant="outline-secondary"><b-icon-backspace/> Back to Recipes</b-button>
