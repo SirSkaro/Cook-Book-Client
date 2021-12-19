@@ -5,6 +5,7 @@ import './plugins/bootstrap-vue'
 import './plugins/axios'
 import './plugins/vuelidate'
 import './plugins/vue-debounce'
+import './plugins/vue-cookies'
 import App from './App.vue'
 import router from './router'
 

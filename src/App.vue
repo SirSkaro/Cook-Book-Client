@@ -5,11 +5,15 @@
       <b-navbar-nav>
         <b-nav-item href="#/cookbook">Cookbook</b-nav-item>
       </b-navbar-nav>
+      <b-navbar-nav>
+        <b-nav-item href="#/tags">Recipe Tags</b-nav-item>
+      </b-navbar-nav>
       <b-navbar-nav class="ml-auto">
-        <b-nav-item-dropdown right>
-          <template slot="button-content"><b-icon-gear-fill></b-icon-gear-fill> Manage</template>
-          <b-dropdown-item href="#/tags"><template><b-icon-card-list></b-icon-card-list> Recipe Tags</template></b-dropdown-item>
+        <b-nav-item-dropdown right v-if="username">
+          <template slot="button-content"><b-icon-person-fill></b-icon-person-fill> Logged in as {{username}}</template>
+          <b-dropdown-item href="#/tags"><template><b-icon-card-list></b-icon-card-list> Log Out</template></b-dropdown-item>
         </b-nav-item-dropdown>
+        <b-nav-item v-else href="#/login"><b-icon-person-fill></b-icon-person-fill> Log In</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
     <router-view id="content"/>
@@ -17,12 +21,22 @@
 </template>
 
 <script>
-import { BIconGearFill, BIconCardList } from 'bootstrap-vue'
+import { BIconCardList, BIconPersonFill } from 'bootstrap-vue'
+import UserService from './services/UserService.js'
 
 export default {
   name: 'App',
   components: {
-    BIconGearFill, BIconCardList
+    BIconCardList, BIconPersonFill
+  },
+  data() {
+    return {
+      username: null
+    }
+  },
+  created: function() {
+    this.username = UserService.getSessionUsername()
+    //UserService.events.$on(UserService.USER_LOGIN_EVENT, (username) => this.username = username)
   }
 }
 </script>
