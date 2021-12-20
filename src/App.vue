@@ -11,11 +11,12 @@
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right v-if="username">
           <template slot="button-content"><b-icon-person-fill></b-icon-person-fill> Logged in as {{username}}</template>
-          <b-dropdown-item href="#/tags"><template><b-icon-card-list></b-icon-card-list> Log Out</template></b-dropdown-item>
+          <b-dropdown-item @click="logout()"><template><b-icon-card-list></b-icon-card-list> Log Out</template></b-dropdown-item>
         </b-nav-item-dropdown>
-        <b-nav-item v-else href="#/login"><b-icon-person-fill></b-icon-person-fill> Log In</b-nav-item>
+        <b-nav-item v-else @click="openLoginForm()"><b-icon-person-fill></b-icon-person-fill> Log In</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
+    <LoginForm :onLogin="reloadPage"/>
     <router-view id="content"/>
   </div>
 </template>
@@ -23,11 +24,12 @@
 <script>
 import { BIconCardList, BIconPersonFill } from 'bootstrap-vue'
 import UserService from './services/UserService.js'
+import LoginForm from './components/login/LoginForm'
 
 export default {
   name: 'App',
   components: {
-    BIconCardList, BIconPersonFill
+    BIconCardList, BIconPersonFill, LoginForm
   },
   data() {
     return {
@@ -36,7 +38,19 @@ export default {
   },
   created: function() {
     this.username = UserService.getSessionUsername()
-    //UserService.events.$on(UserService.USER_LOGIN_EVENT, (username) => this.username = username)
+  },
+  methods: {
+    openLoginForm() {
+      this.$bvModal.show(LoginForm.modalId);
+    },
+    logout() {
+      UserService.logout()
+      this.reloadPage()
+    },
+    reloadPage() {
+      console.log('reloading!')
+      this.$router.go()
+    }
   }
 }
 </script>

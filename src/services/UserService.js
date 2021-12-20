@@ -19,6 +19,10 @@ export default {
         Vue.$cookies.set(TOKEN_COOKIE, session.token, new Date(session.expiration))
         Vue.$cookies.set(USER_COOKIE, session.username, new Date(session.expiration))
       })
+  },
+  logout() {
+    Vue.$cookies.remove(TOKEN_COOKIE)
+    Vue.$cookies.remove(USER_COOKIE)
   }
 }
 
