@@ -4,7 +4,7 @@
     <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
       <b-row class="mt-3">
         <b-col md="3" offset-md="9"> 
-          <b-button size="lg" variant="primary" @click="setupModalAdd()" v-b-modal.tag-modal><b-icon-plus-square></b-icon-plus-square> Add Tag</b-button>
+          <b-button size="lg" variant="primary" v-if="permissions.create" @click="setupModalAdd()" v-b-modal.tag-modal><b-icon-plus-square></b-icon-plus-square> Add Tag</b-button>
         </b-col>
       </b-row>
 
@@ -12,8 +12,8 @@
         <b-col md="12">
           <b-table striped hover fixed :items="tags" :fields="tableFields">
             <template #cell(actions)="row">
-              <b-button size="sm" variant="info" v-b-modal.tag-modal @click="setupModalModle(row.item)"><b-icon-pencil></b-icon-pencil></b-button>
-              <b-button size="sm" variant="danger" v-b-modal.delete-confirmation-modal @click="setupModalModle(row.item)"><b-icon-trash></b-icon-trash></b-button>
+              <b-button size="sm" variant="info" v-if="canUpdateTag(row.item)" v-b-modal.tag-modal @click="setupModalModle(row.item)"><b-icon-pencil></b-icon-pencil></b-button>
+              <b-button size="sm" variant="danger" v-if="canDeleteTag(row.item)" v-b-modal.delete-confirmation-modal @click="setupModalModle(row.item)"><b-icon-trash></b-icon-trash></b-button>
             </template>
           </b-table>
         </b-col>
@@ -49,6 +49,7 @@
 
 <script>
 import TagsService from '../services/TagsService.js'
+import PermissionService from '../services/PermissionService'
 import LoadingScreen from '../components/common/loading-screen'
 import { validationMixin } from 'vuelidate'
 import { BIconPlusSquare, BIconPencil, BIconTrash } from 'bootstrap-vue'
@@ -73,6 +74,9 @@ export default {
       },
       form: {
         label: null
+      },
+      permissions: {
+        create: false
       },
       hasPendingCall: false
     }
@@ -102,6 +106,7 @@ export default {
             this.pageConfig.currentPage = tagsPage.page.number + 1
             this.pageConfig.itemsPerPage = tagsPage.page.size
             this.pageConfig.totalItems = tagsPage.page.totalElements
+            this.permissions.create = PermissionService.canCreate(tagsPage)
           }).catch(() => this.showErrorBanner('Unable to load tags'))
     },
     saveTag() {
@@ -140,6 +145,12 @@ export default {
     },
     togglePendingCall() {
       this.hasPendingCall = !this.hasPendingCall;
+    },
+    canUpdateTag(tag) {
+      return PermissionService.canUpdate(tag)
+    },
+    canDeleteTag(tag) {
+      return PermissionService.canDelete(tag)
     }
   }
   
