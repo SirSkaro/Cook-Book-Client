@@ -9,9 +9,9 @@
         <b-col md="3" offset-md="6">
           <b-button-group>
             <b-button size="lg" v-if="!isEditMode" variant="secondary" @click="downloadExport()"><b-icon-printer /></b-button>
-            <b-button size="lg" v-if="!isEditMode" variant="info" @click="startEdit()"><b-icon-pencil /></b-button>
+            <b-button size="lg" v-if="permissions.update && !isEditMode" variant="info" @click="startEdit()"><b-icon-pencil /></b-button>
             <b-button size="lg" v-if="isEditMode" variant="secondary" @click="cancelEdit()"><b-icon-eye /></b-button>
-            <b-button size="lg" variant="danger" @click="showDeleteModal()">
+            <b-button size="lg" variant="danger" v-if="permissions.delete" @click="showDeleteModal()">
               <b-icon-trash />
               <b-modal :id="deleteModalId"
                 title="Delete Recipe" ok-variant="danger" ok-title="Yes, delete"
@@ -67,6 +67,7 @@ import LoadingScreen from '../components/common/loading-screen'
 import RecipesService from '../services/RecipesService.js'
 import IngredientsService from '../services/IngredientsService.js'
 import IngredientList from '../components/ingredient/IngredientList'
+import PermissionService from '../services/PermissionService.js'
 import TagForm from '../components/tag/TagForm'
 import { BIconCloudUpload, BIconBackspace, BIconPencil,
   BIconSlashCircle, BIconEye, BIconTrash, BIconPrinter } from 'bootstrap-vue'
@@ -96,7 +97,11 @@ export default {
       ingredients: [],
       tags: [],
       isEditMode: false,
-      deleteModalId
+      deleteModalId,
+      permissions: {
+        update: false,
+        delete: false
+      }
     }
   },
   methods: {
@@ -127,7 +132,11 @@ export default {
     fetchRecipe() {
       let recipeId = this.$route.params.id;
       return RecipesService.getById(recipeId)
-        .then(recipe => {this.recipe = recipe})
+        .then(recipe => {
+          this.recipe = recipe
+          this.permissions.update = PermissionService.canUpdate(recipe)
+          this.permissions.delete = PermissionService.canDelete(recipe)
+        })
     },
     fetchIngredients() {
       return RecipesService.getIngredients(this.recipe)
