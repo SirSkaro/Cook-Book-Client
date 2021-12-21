@@ -2,7 +2,7 @@
   <b-container>
     <h1>Cookbook</h1>
     <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
-      <b-row class="mt-3">
+      <b-row class="mt-3" v-if="permissions.create">
         <b-col md="3" offset-md="9"> 
           <b-button size="lg" variant="primary" @click="openNewRecipeForm()"><b-icon-plus-square/> Add Recipe</b-button>
           <NewRecipeForm :handleSubmit="createRecipe"/>
@@ -54,6 +54,7 @@ import LoadingScreen from '../components/common/loading-screen'
 import { BIconPlusSquare, BIconSearch, BIconXCircle } from 'bootstrap-vue'
 import NewRecipeForm from '../components/recipe/NewRecipeForm'
 import RecipeFilterForm from '../components/recipe/RecipeFilterForm'
+import PermissionService from '../services/PermissionService'
 
 export default {
   name: "CookBook",
@@ -75,6 +76,9 @@ export default {
         ingredients: [],
         title: null,
         serveCount: null
+      },
+      permissions: {
+        create: false
       }
     };
   },
@@ -96,6 +100,7 @@ export default {
             this.pageConfig.currentPage = recipePage.page.number + 1
             this.pageConfig.itemsPerPage = recipePage.page.size
             this.pageConfig.totalItems = recipePage.page.totalElements
+            this.permissions.create = PermissionService.canCreate(recipePage)
         }).catch(() => this.showErrorBanner('Unable to load recipes'))
         .then(this.scrollToTop)
         .finally(this.togglePendingCall)
