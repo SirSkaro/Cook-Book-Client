@@ -9,7 +9,7 @@
           <b-button href="#/cookbook" variant="primary">Go to Recipies</b-button>
         </b-card>
         <b-card>
-          <template #header><h4 class="mb-0">Manage Tags</h4></template>
+          <template #header><h4 class="mb-0">Tags</h4></template>
           <b-card-text>Create custom tags to categorize your recipes with for easy lookups. Mark recipes as "dinner", "dessert", "big crowd", and more.</b-card-text>
           <b-button href="#/tags" variant="primary">Go to Tag Managment</b-button>
         </b-card>
@@ -26,7 +26,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

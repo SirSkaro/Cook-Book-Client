@@ -15,7 +15,7 @@
             <hr />
             <b-col align-self="center">
               <b-button-group>
-                <b-button size="lg" variant="outline-primary" @click="loadRecipes()"><b-icon-search/> Search for recipes</b-button>
+                <b-button size="lg" variant="outline-primary" @click="syncSearchCriteriaToQueryParams()"><b-icon-search/> Search for recipes</b-button>
                 <b-button size="lg" variant="outline-danger" @click="clearSearch()"><b-icon-x-circle/> Clear search</b-button>
               </b-button-group>
             </b-col>
@@ -80,7 +80,7 @@ export default {
       permissions: {
         create: false
       }
-    };
+    }
   },
   components: {
     LoadingScreen, 
@@ -88,9 +88,43 @@ export default {
     RecipeCard, NewRecipeForm, RecipeFilterForm
   },
   created() {
+    this.syncQueryParamsToSearchCriteria()
     this.loadRecipes()
   },
   methods: {
+    syncQueryParamsToSearchCriteria() {
+      this.searchCriteria.ingredients = this.$route.query.ingredients || []
+      this.searchCriteria.tags = this.$route.query.tags || []
+      this.searchCriteria.title = this.$route.query.title || null
+      this.searchCriteria.serveCount = this.$route.query.serveCount || null
+      this.pageConfig.currentPage = this.$route.query.page || 1
+    },
+    syncSearchCriteriaToQueryParams() {
+      function removeEmpty(obj) {
+        return Object.keys(obj)
+          .filter(key => obj[key] != null && !(Array.isArray(obj[key]) && !obj[key].length))
+          .reduce((acc, k) => {
+            acc[k] = obj[k];
+            return acc;
+          }, {});
+      }
+
+      let queryParams = removeEmpty(JSON.parse(JSON.stringify(this.searchCriteria)))
+      queryParams.page = this.pageConfig.currentPage
+
+      let routeConfig = {
+        path: this.$route.path,
+        query: queryParams
+      }
+
+      return this.$router.push(routeConfig)
+        .catch(error => {
+          console.log(error)
+          if (error.name != "NavigationDuplicated") {
+            throw error
+          }
+        })
+    },
     loadRecipes() {
       let page = this.pageConfig.currentPage - 1
       this.togglePendingCall()
@@ -110,7 +144,7 @@ export default {
       this.searchCriteria.ingredients = []
       this.searchCriteria.title = null
       this.searchCriteria.serveCount = null
-      return this.loadRecipes()
+      return this.syncSearchCriteriaToQueryParams()
     },
     togglePendingCall() {
       this.hasPendingCall = !this.hasPendingCall;
@@ -140,6 +174,13 @@ export default {
     },
     scrollToTop() {
       window.scrollTo(0,0)
+    }
+  },
+  watch: {
+    $route(to, from) {
+      console.log(to, from)
+      this.syncQueryParamsToSearchCriteria()
+      this.loadRecipes()
     }
   }
 }
