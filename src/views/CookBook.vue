@@ -102,7 +102,8 @@ export default {
     syncSearchCriteriaToQueryParams() {
       function removeEmpty(obj) {
         return Object.keys(obj)
-          .filter(key => obj[key] != null && !(Array.isArray(obj[key]) && !obj[key].length))
+          .filter(key => obj[key] != null)
+          .filter(key => !(Array.isArray(obj[key]) && !obj[key].length))
           .reduce((acc, k) => {
             acc[k] = obj[k];
             return acc;
@@ -118,12 +119,6 @@ export default {
       }
 
       return this.$router.push(routeConfig)
-        .catch(error => {
-          console.log(error)
-          if (error.name != "NavigationDuplicated") {
-            throw error
-          }
-        })
     },
     loadRecipes() {
       let page = this.pageConfig.currentPage - 1
@@ -177,8 +172,7 @@ export default {
     }
   },
   watch: {
-    $route(to, from) {
-      console.log(to, from)
+    $route() {
       this.syncQueryParamsToSearchCriteria()
       this.loadRecipes()
     }
