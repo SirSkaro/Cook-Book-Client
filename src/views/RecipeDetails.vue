@@ -72,6 +72,7 @@ import TagForm from '../components/tag/TagForm'
 import { BIconCloudUpload, BIconBackspace, BIconPencil,
   BIconSlashCircle, BIconEye, BIconTrash, BIconPrinter } from 'bootstrap-vue'
 const deleteModalId = 'delete-recipe-modal'
+let internallyReferred = false
 
 export default {
   name: 'RecipeDetails',
@@ -89,6 +90,10 @@ export default {
     this.togglePendingCall()
     this.fetchData()
       .finally(this.togglePendingCall)
+  },
+  beforeRouteEnter(to, from, next) {
+    internallyReferred = !!from.name
+    next()
   },
   data() {
     return {
@@ -204,6 +209,9 @@ export default {
         .finally(this.togglePendingCall)
     },
     goToCookbook() {
+      if(internallyReferred) {
+        this.$router.go(-1)
+      }
       this.$router.push({name: 'CookBook'})
     },
     downloadExport() {
