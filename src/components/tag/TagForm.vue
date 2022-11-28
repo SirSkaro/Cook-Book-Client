@@ -97,8 +97,7 @@ export default {
       this.handleRemoveTag(tag)
     },
     tagAlreadySelected(tag) {
-      let tagId = this.getTagId(tag)
-      return this.selectedTags.some(selectedTag => this.getTagId(selectedTag) === tagId)
+      return this.selectedTags.some(selectedTag => selectedTag.label == tag.label)
     },
     searchTags() {
       let trimmedSearch = this.search.trim().toLowerCase()

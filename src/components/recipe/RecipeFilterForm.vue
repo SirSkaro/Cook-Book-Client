@@ -48,7 +48,6 @@
 
 <script>
 import TagForm from '../../components/tag/TagForm'
-import TagsService from '../../services/TagsService.js'
 import { BIconPlusSquare } from 'bootstrap-vue'
 
 export default {
@@ -65,9 +64,8 @@ export default {
       this.searchCriteria.tags.push(tag)
     },
     removeTag(tag) {
-      let tagId = TagsService.getId(tag)
       this.searchCriteria.tags = this.searchCriteria.tags.filter(selectedTag => {
-        return TagsService.getId(selectedTag) !== tagId
+        return selectedTag.label != tag.label
       })
     },
     addSearchIngredient() {

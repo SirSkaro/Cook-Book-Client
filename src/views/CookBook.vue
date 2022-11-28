@@ -93,24 +93,26 @@ export default {
   },
   methods: {
     syncQueryParamsToSearchCriteria() {
-      this.searchCriteria.ingredients = this.$route.query.ingredients || []
-      this.searchCriteria.tags = this.$route.query.tags || []
+      this.searchCriteria.ingredients = this.$route.query.ingredients?.split(',') || []
       this.searchCriteria.title = this.$route.query.title || null
       this.searchCriteria.serveCount = this.$route.query.serveCount || null
       this.pageConfig.currentPage = this.$route.query.page || 1
+
+      this.searchCriteria.tags = this.$route.query.tags?.split(',') || []
+      this.searchCriteria.tags = this.searchCriteria.tags.map(tagLabel => {return {label: tagLabel}})
     },
     syncSearchCriteriaToQueryParams() {
-      function removeEmpty(obj) {
-        return Object.keys(obj)
-          .filter(key => obj[key] != null)
-          .filter(key => !(Array.isArray(obj[key]) && !obj[key].length))
-          .reduce((acc, k) => {
-            acc[k] = obj[k];
-            return acc;
-          }, {});
+      function formatList(list) {
+        return list.length 
+          ? list.join(',')
+          : undefined;
       }
 
-      let queryParams = removeEmpty(JSON.parse(JSON.stringify(this.searchCriteria)))
+      let queryParams = {}
+      queryParams.ingredients = formatList(this.searchCriteria.ingredients)
+      queryParams.tags = formatList(this.searchCriteria.tags.map(tag => tag.label))
+      queryParams.title = this.searchCriteria.title || undefined
+      queryParams.serveCount = this.searchCriteria.serveCount || undefined
       queryParams.page = this.pageConfig.currentPage
 
       let routeConfig = {
