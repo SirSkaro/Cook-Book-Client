@@ -1,13 +1,12 @@
 # build stage
 FROM node:lts-alpine as build-stage
+ENV NODE_OPTIONS --openssl-legacy-provider
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run build
 
-#Environment
-ENV NODE_OPTIONS --openssl-legacy-provider
 
 # production stage
 FROM nginx:stable-alpine as production-stage
