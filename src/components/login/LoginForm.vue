@@ -16,7 +16,12 @@
               <b-form-invalid-feedback id="usernameFeedback">Username is required</b-form-invalid-feedback>
             </b-form-group>
             <b-form-group label="Password" label-for="password">
-              <b-form-input type="password" id="password" v-model="$v.loginForm.password.$model" aria-describedby="passwordFeedback" :state="validateState('password')"></b-form-input>
+              <b-form-input type="password" id="password" 
+                v-model="$v.loginForm.password.$model" 
+                aria-describedby="passwordFeedback" 
+                :state="validateState('password')"
+                v-on:keyup.enter="submitLogin($event)">
+              </b-form-input>
               <b-form-invalid-feedback id="passwordFeedback">Password is required</b-form-invalid-feedback>
             </b-form-group>
           </b-form>
