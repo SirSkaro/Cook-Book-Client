@@ -11,7 +11,9 @@
       <b-row class="mt-3">
         <b-col md="12">
           <b-card bg-variant="light"> 
-            <RecipeFilterForm v-bind:search-criteria.sync="searchCriteria"/>
+            <RecipeFilterForm 
+              v-bind:search-criteria.sync="searchCriteria"
+              :on-enter="syncSearchCriteriaToQueryParams"/>
             <hr />
             <b-col align-self="center">
               <b-button-group>

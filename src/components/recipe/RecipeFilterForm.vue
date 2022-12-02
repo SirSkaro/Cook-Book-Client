@@ -7,7 +7,9 @@
         <b-form-group>
           <b-form-input size="lg"
             v-model="searchCriteria.title" 
-            placeholder="Enter title. E.g. 'Hunter's Chili'"/>
+            v-on:keyup.enter="handleEnterKey()"
+            placeholder="Enter title. E.g. 'Hunter's Chili'"
+            autofocus/>
         </b-form-group>
       </b-col>
       <b-col md="6">
@@ -16,6 +18,7 @@
         <b-form-group>
           <b-form-input type="number" size="lg"
             v-model="searchCriteria.serveCount" 
+            v-on:keyup.enter="handleEnterKey()"
             placeholder="(Leave blank for any serving yield)"/>
         </b-form-group>
       </b-col>
@@ -28,7 +31,9 @@
             <b-form-input size="lg"
               v-model="searchCriteria.ingredients[index]" 
               v-on:blur="handleIngredientBlur(index)"
-              placeholder="Enter ingredient. E.g. 'garlic'"/>
+              placeholder="Enter ingredient. E.g. 'garlic'"
+              v-on:keyup.enter="handleEnterKey()"
+              autofocus/>
           </b-form-group>
         <b-col v-if="showAddIngredient" align-self="center">
           <b-button @click="addSearchIngredient()" size="lg"><b-icon-plus-square/> Add ingredient to search</b-button>
@@ -57,7 +62,8 @@ export default {
     BIconPlusSquare
   },
   props: {
-    searchCriteria: { type: Object, required: true}
+    searchCriteria: { type: Object, required: true},
+    onEnter: { type: Function, required: false }
   },
   methods: {
     selectTag(tag) {
@@ -76,6 +82,12 @@ export default {
       if(isStringEmpty) {
         this.searchCriteria.ingredients.splice(index, 1)
       }
+    },
+    handleEnterKey() {
+      if(!this.onEnter) {
+        return
+      }
+      this.onEnter()
     }
   },
   computed: {
