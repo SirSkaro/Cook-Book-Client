@@ -86,6 +86,9 @@ export default {
       }
     },
     handleEnterKey() {
+      if(!this.canSubmit) {
+        return
+      }
       this.$refs[this.modalId].hide()
       this.handleSubmit(this.ingredientForm)
     }

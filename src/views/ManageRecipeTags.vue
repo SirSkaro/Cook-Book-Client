@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <h1>Manage Recipe Tags</h1>
+    <h1>Recipe Tags</h1>
     <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
       <b-row class="mt-3">
         <b-col md="3" offset-md="9"> 
