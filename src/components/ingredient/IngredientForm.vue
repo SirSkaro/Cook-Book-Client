@@ -1,27 +1,36 @@
 <template>
   <b-modal :id="modalId" 
+    :ref="modalId"
     title="Edit Ingredient" 
     @ok="handleSubmit(ingredientForm)"
     @shown="resetForm"
     :ok-disabled="!canSubmit">
     <b-form>
       <b-form-group label="Ingredient" label-for="ingredient">
-        <b-form-input id="ingredient" autofocus v-model="$v.ingredientForm.label.$model" :state="validateState('label')"/>
+        <b-form-input id="ingredient" autofocus 
+          v-on:keyup.enter="handleEnterKey()"
+          v-model="$v.ingredientForm.label.$model" 
+          :state="validateState('label')"/>
       </b-form-group>
       <b-form-group label="Quantity" label-for="quantity">
         <b-input-group>
           <b-form-input placeholder="minimum quantity"
             v-on:blur="handleMinQuantityBlur()"
+            v-on:keyup.enter="handleEnterKey()"
             v-model="$v.ingredientForm.quantityMin.$model" 
             :state="validateState('quantityMin')"/>
           <b-form-input placeholder="maximum quantity"
             :disabled="minQuantityEmpty" 
+            v-on:keyup.enter="handleEnterKey()"
             v-model="$v.ingredientForm.quantityMax.$model" 
             :state="validateState('quantityMax')"/>
         </b-input-group>
       </b-form-group>
       <b-form-group label="Units" label-for="units">
-        <b-form-input id="units" v-model="$v.ingredientForm.units.$model" :state="validateState('units')"/>
+        <b-form-input id="units" 
+          v-model="$v.ingredientForm.units.$model" 
+          :state="validateState('units')"
+          v-on:keyup.enter="handleEnterKey()"/>
       </b-form-group>
       <b-form-group label="Optional" label-for="optional">
         <b-form-radio-group v-model="$v.ingredientForm.optional.$model">
@@ -75,6 +84,10 @@ export default {
         this.ingredientForm.quantityMin = this.ingredientForm.quantityMax
         this.ingredientForm.quantityMax = null
       }
+    },
+    handleEnterKey() {
+      this.$refs[this.modalId].hide()
+      this.handleSubmit(this.ingredientForm)
     }
   },
   computed: {

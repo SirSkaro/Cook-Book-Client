@@ -48,7 +48,6 @@ export default {
       this.reloadPage()
     },
     reloadPage() {
-      console.log('reloading!')
       this.$router.go()
     }
   }
