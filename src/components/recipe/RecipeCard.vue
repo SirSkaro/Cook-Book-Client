@@ -2,7 +2,7 @@
   <b-card :title="recipe.label" class="h-100">
     <b-card-text>{{recipe.shortDescription}}</b-card-text>
     <template #footer>
-      <b-button size="lg" variant="secondary" @click="viewRecipeDetails()"><b-icon-eye/></b-button>
+      <b-button size="lg" variant="secondary" @click="viewRecipeDetails()" @click.middle="viewRecipeDetailsInNewTab()"><b-icon-eye/></b-button>
       <b-button size="lg" variant="info" v-if="canUpdate" @click="gotoEditRecipe()"><b-icon-pencil/></b-button>
     </template>
   </b-card>
@@ -26,11 +26,11 @@ export default {
   },
   methods: {
     viewRecipeDetails() {
-      let routeConfig = { 
-        name: 'RecipeDetails', 
-        params: {id: RecipesService.getId(this.recipe)}
-      }
-      this.$router.push(routeConfig)
+      this.$router.push(this.recipeRouteConfig)
+    },
+    viewRecipeDetailsInNewTab() {
+      let routeData = this.$router.resolve(this.recipeRouteConfig)
+      window.open(routeData.href, '_blank')
     },
     gotoEditRecipe() {
       let routeConfig = { 
@@ -43,6 +43,12 @@ export default {
   computed: {
     canUpdate: function() {
       return PermissionService.canUpdate(this.recipe)
+    },
+    recipeRouteConfig: function() {
+      return { 
+        name: 'RecipeDetails', 
+        params: {id: RecipesService.getId(this.recipe)}
+      }
     }
   }
 };
