@@ -12,7 +12,12 @@
         <b-card bg-variant="light" border-variant="dark">
           <b-form>
             <b-form-group label="Username" label-for="username">
-              <b-form-input id="username" autofocus v-model="$v.loginForm.username.$model" aria-describedby="titleFeedback" :state="validateState('username')"></b-form-input>
+              <b-form-input id="username" autofocus 
+                v-model="$v.loginForm.username.$model" 
+                aria-describedby="titleFeedback" 
+                :state="validateState('username')"
+                v-on:keyup.enter="handleEnter($event)">
+              </b-form-input>
               <b-form-invalid-feedback id="usernameFeedback">Username is required</b-form-invalid-feedback>
             </b-form-group>
             <b-form-group label="Password" label-for="password">
@@ -20,7 +25,7 @@
                 v-model="$v.loginForm.password.$model" 
                 aria-describedby="passwordFeedback" 
                 :state="validateState('password')"
-                v-on:keyup.enter="submitLogin($event)">
+                v-on:keyup.enter="handleEnter($event)">
               </b-form-input>
               <b-form-invalid-feedback id="passwordFeedback">Password is required</b-form-invalid-feedback>
             </b-form-group>
@@ -79,6 +84,12 @@ export default {
         .then(() => this.$refs[this.modalId].hide())
         .catch(() => this.showErrorBanner('Username or password incorrect'))
         .finally(this.togglePendingCall)
+    },
+    handleEnter(modalEvent) {
+      if(!this.canSubmit) {
+        return
+      }
+      this.submitLogin(modalEvent)
     },
     showErrorBanner(message) {
       this.$refs.loadingScreen.showError(message)
