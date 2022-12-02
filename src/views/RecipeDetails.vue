@@ -1,5 +1,5 @@
 <template>
-  <b-container class="mt-5">
+  <b-container class="mt-5 pt-3">
     <LoadingScreen :show="hasPendingCall" ref="loadingScreen">
       <h1>{{recipe.label}}</h1>
       <b-row>
