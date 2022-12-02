@@ -33,7 +33,7 @@
             v-model="pageConfig.currentPage"
             :total-rows="pageConfig.totalItems"
             :per-page="pageConfig.itemsPerPage"
-            @input="loadRecipes">
+            @input="syncSearchCriteriaToQueryParams">
           </b-pagination>
         </b-col>
         <b-col md="12" v-else>
