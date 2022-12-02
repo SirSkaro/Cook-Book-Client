@@ -13,7 +13,7 @@ const routes = [
   {
     path: '/tags',
     name: 'Tags',
-    component: () => import('../views/ManageRecipeTags.vue')
+    component: () => import('../views/RecipeTags.vue')
   },
   {
     path: '/cookbook',
