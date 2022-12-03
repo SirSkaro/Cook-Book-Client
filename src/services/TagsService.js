@@ -31,5 +31,8 @@ export default {
     getId(tag) {
         let url = tag._links.self.href
         return url.substring(url.lastIndexOf('/') + 1)
+    },
+    hasAnyPermission(tag) {
+        return !!tag._links.delete || !!tag._links.update 
     }
 }

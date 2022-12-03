@@ -10,7 +10,7 @@
 
       <b-row class="mt-3">
         <b-col md="12">
-          <b-table striped hover fixed :items="tags" :fields="tableFields">
+          <b-table striped hover fixed :items="tags" :fields="tableHeaders">
             <template #cell(actions)="row">
               <b-button size="sm" variant="info" v-if="canUpdateTag(row.item)" v-b-modal.tag-modal @click="setupModalModle(row.item)"><b-icon-pencil></b-icon-pencil></b-button>
               <b-button size="sm" variant="danger" v-if="canDeleteTag(row.item)" v-b-modal.delete-confirmation-modal @click="setupModalModle(row.item)"><b-icon-trash></b-icon-trash></b-button>
@@ -73,7 +73,6 @@ export default {
     return {
       addModalRef,
       tags: [],
-      tableFields: ['label', 'actions'],
       pageConfig: {
         currentPage: 1,
         itemsPerPage: 0,
@@ -101,8 +100,18 @@ export default {
       .finally(this.togglePendingCall)
   },
   computed: {
+    tableHeaders: function() {
+      let tableHeaders = ['label']
+      if(this.canTakeAnyActions) {
+        tableHeaders.push('actions')
+      }
+      return tableHeaders
+    },
     canSubmit: function() {
       return this.$v.form.$dirty ? !this.$v.form.$anyError : false
+    },
+    canTakeAnyActions: function() {
+      return this.tags.some(TagsService.hasAnyPermission)
     }
   },
   methods: {
