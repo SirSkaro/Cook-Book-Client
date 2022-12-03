@@ -12,9 +12,11 @@
         <b-col md="12">
           <b-table striped hover fixed :items="tags" :fields="tableHeaders">
             <template #cell(actions)="row">
-              <b-button size="sm" variant="secondary" v-b-modal.tag-modal @click="lookupRecipes(row.item)"><b-icon-search/></b-button>
-              <b-button size="sm" variant="info" v-if="canUpdateTag(row.item)" v-b-modal.tag-modal @click="setupModalModle(row.item)"><b-icon-pencil/></b-button>
-              <b-button size="sm" variant="danger" v-if="canDeleteTag(row.item)" v-b-modal.delete-confirmation-modal @click="setupModalModle(row.item)"><b-icon-trash/></b-button>
+              <b-button-group>
+                <b-button size="sm" variant="secondary" v-b-modal.tag-modal @click="lookupRecipes(row.item)"><b-icon-search/></b-button>
+                <b-button size="sm" variant="info" v-if="canUpdateTag(row.item)" v-b-modal.tag-modal @click="setupModalModle(row.item)"><b-icon-pencil/></b-button>
+                <b-button size="sm" variant="danger" v-if="canDeleteTag(row.item)" v-b-modal.delete-confirmation-modal @click="setupModalModle(row.item)"><b-icon-trash/></b-button>
+              </b-button-group>
             </template>
           </b-table>
         </b-col>

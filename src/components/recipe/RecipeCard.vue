@@ -12,6 +12,7 @@
 import { BIconEye, BIconPencil } from 'bootstrap-vue'
 import RecipesService from '../../services/RecipesService.js'
 import PermissionService from '../../services/PermissionService.js'
+import RecipeDetails from '../../views/RecipeDetails.vue'
 
 export default {
   name: 'RecipeCard',
@@ -33,10 +34,8 @@ export default {
       window.open(routeData.href, '_blank')
     },
     gotoEditRecipe() {
-      let routeConfig = { 
-        name: 'RecipeDetails', 
-        params: {id: RecipesService.getId(this.recipe), editMode: true}
-      }
+      let routeConfig = this.recipeRouteConfig 
+      routeConfig.params.editMode = true
       this.$router.push(routeConfig)
     }
   },
@@ -46,7 +45,7 @@ export default {
     },
     recipeRouteConfig: function() {
       return { 
-        name: 'RecipeDetails', 
+        name: RecipeDetails.name, 
         params: {id: RecipesService.getId(this.recipe)}
       }
     }
