@@ -12,8 +12,9 @@
         <b-col md="12">
           <b-table striped hover fixed :items="tags" :fields="tableHeaders">
             <template #cell(actions)="row">
-              <b-button size="sm" variant="info" v-if="canUpdateTag(row.item)" v-b-modal.tag-modal @click="setupModalModle(row.item)"><b-icon-pencil></b-icon-pencil></b-button>
-              <b-button size="sm" variant="danger" v-if="canDeleteTag(row.item)" v-b-modal.delete-confirmation-modal @click="setupModalModle(row.item)"><b-icon-trash></b-icon-trash></b-button>
+              <b-button size="sm" variant="secondary" v-b-modal.tag-modal @click="lookupRecipes(row.item)"><b-icon-search/></b-button>
+              <b-button size="sm" variant="info" v-if="canUpdateTag(row.item)" v-b-modal.tag-modal @click="setupModalModle(row.item)"><b-icon-pencil/></b-button>
+              <b-button size="sm" variant="danger" v-if="canDeleteTag(row.item)" v-b-modal.delete-confirmation-modal @click="setupModalModle(row.item)"><b-icon-trash/></b-button>
             </template>
           </b-table>
         </b-col>
@@ -58,21 +59,23 @@ import TagsService from '../services/TagsService.js'
 import PermissionService from '../services/PermissionService'
 import LoadingScreen from '../components/common/loading-screen'
 import { validationMixin } from 'vuelidate'
-import { BIconPlusSquare, BIconPencil, BIconTrash } from 'bootstrap-vue'
+import { BIconPlusSquare, BIconPencil, BIconTrash, BIconSearch } from 'bootstrap-vue'
 import { required } from 'vuelidate/lib/validators'
+import CookBook from './CookBook.vue'
 const addModalRef = "addTagModal"
 
 export default {
   name: 'ManageRecipeTags',
   mixins: [validationMixin],
   components: {
-    BIconPlusSquare, BIconPencil, BIconTrash,
+    BIconPlusSquare, BIconPencil, BIconTrash, BIconSearch,
     LoadingScreen
   },
   data() {
     return {
       addModalRef,
       tags: [],
+      tableHeaders: ['label', 'recipeCount', 'actions'],
       pageConfig: {
         currentPage: 1,
         itemsPerPage: 0,
@@ -100,13 +103,6 @@ export default {
       .finally(this.togglePendingCall)
   },
   computed: {
-    tableHeaders: function() {
-      let tableHeaders = ['label']
-      if(this.canTakeAnyActions) {
-        tableHeaders.push('actions')
-      }
-      return tableHeaders
-    },
     canSubmit: function() {
       return this.$v.form.$dirty ? !this.$v.form.$anyError : false
     },
@@ -147,6 +143,13 @@ export default {
         .catch(() => this.showErrorBanner('Unable to delete tag'))
         .then(this.loadTags)
         .finally(this.togglePendingCall)
+    },
+    lookupRecipes(tag) {
+      let routeConfig = {
+        name: CookBook.name,
+        query: {tags: tag.label}
+      }
+      this.$router.push(routeConfig)
     },
     setupModalModle(tag) {
       this.form = JSON.parse(JSON.stringify(tag))
