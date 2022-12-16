@@ -210,7 +210,8 @@ export default {
     },
     goToCookbook() {
       if(internallyReferred) {
-        this.$router.go(-1)
+        window.history.go(-1)
+        return
       }
       this.$router.push({name: 'CookBook'})
     },
